@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Paper Telephone</title>
-  <link rel="stylesheet" type="text/css" href="modules.css">
+  <link rel="stylesheet" type="text/css" href="/static/modules.css">
 </head>
 <body>
   <header>
@@ -28,6 +28,7 @@
         <li class="selector small"></li>
       </ul>
       <button id="clear">Clear drawing</button>
+      <button id="upload">Upload</button>
       <h3>Color:</h3>
       <ul class="color-selectors cf">
         <li class="selector black selected"></li>
@@ -51,12 +52,18 @@
     </div>
   </section>
   <section class="main">
+    <h2>Previous Picture</h2>
+    <div class="canvas-box">
+      <canvas id="oldpic" class="lower-canvas"></canvas>
+    </div>
+  </section>
+  <section class="main">
     <h1 class="section-title">Write a sentence</h1>
     <textarea id="textbox" rows="10" cols="30"></textarea>
     <button id="submit-text">Submit</button>
   </section>
-  <script type="text/javascript" src="fabric.min.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script type="text/javascript" src="drawing.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="/static/drawing.js"></script>
 </body>
 </html>

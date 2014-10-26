@@ -2,6 +2,8 @@ var drawingCanvas = new fabric.Canvas('drawing', {
   isDrawingMode: true
 });
 
+var displayCanvas = new fabric.StaticCanvas('oldpic');
+
 fabric.Object.prototype.transparentCorners = false;
 
 drawingCanvas.freeDrawingBrush.width = 30;
@@ -24,4 +26,18 @@ $('#clear').on('click', function () {
 
 $('#submit-text').on('click', function () {
   $('.drawing-prompt').text($('#textbox').val());
+});
+
+$('#upload').on('click', function () {
+  picJSON = JSON.stringify(drawingCanvas.toJSON());
+  $.ajax({
+    type: 'POST',
+    url: '/new-drawing',
+    data: JSON.stringify(picJSON),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json"})
+  .done(function (data) {
+    drawingCanvas.clear();
+    displayCanvas.loadFromJSON(data, displayCanvas.renderAll.bind(displayCanvas));
+  });
 });
