@@ -29,7 +29,7 @@ $('#submit-text').on('click', function () {
 });
 
 $('#upload').on('click', function () {
-  picJSON = JSON.stringify(drawingCanvas.toJSON());
+  picJSON = drawingCanvas.toJSON();
   $.ajax({
     type: 'POST',
     url: '/new-drawing',
@@ -41,3 +41,4 @@ $('#upload').on('click', function () {
     displayCanvas.loadFromJSON(data, displayCanvas.renderAll.bind(displayCanvas));
   });
 });
+
