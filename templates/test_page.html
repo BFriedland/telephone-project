@@ -9,13 +9,17 @@
     <h1 class="main-title">Paper Telephone<br> Game</h1>
     <hgroup class="project-title">
       <h2>A test page for drawing &amp; writing</h2>
-      <h3>By Jason Brokaw</h3>
-      <h4>Ver. 0.01</h4>
     </hgroup>
+    <a href="{{ url_for('login') }}">Set username</a>
+    {% if session.username %}
+    <p> Logged in as {{ session.username | safe }}</p>
+    <a href="{{ url_for('logout') }}">Log out</a>
+    {% endif %}
   </header>
   <section class="main">
     <h1 class="section-title">Draw a picture</h1>
     <h2 class="drawing-prompt">Sentence goes here</h2>
+    {% if session.username %}
     <div class="canvas-box">
       <canvas id="drawing" class="lower-canvas"></canvas>
     </div>
@@ -50,6 +54,9 @@
         <li class="selector teal"></li>
       </ul>
     </div>
+    {% else %}
+    <h3>Username must be set to draw</h3>
+    {% endif %}
   </section>
   <section class="main">
     <h2>Previous Picture</h2>

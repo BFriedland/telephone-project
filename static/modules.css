@@ -1,5 +1,16 @@
 /*Basic styling*/
 
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,800italic,400,800);
+@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic);
+
+
+/*  $color-1: rgb(159,28,25);
+    $color-2: rgb(101,209,251);
+    $color-3: rgb(5,171,235);
+    $color-4: rgb(255,133,0);
+    $color-5: rgb(255,36,31);
+*/
+
 .cf:before,
 .cf:after {
     content: " "; /* 1 */
@@ -15,17 +26,11 @@
  * Include this rule to trigger hasLayout and contain floats.
  */
 .cf {
-    *zoom: 1;
+    zoom: 1;
 }
 
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,800italic,400,800);
-@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic);
 
-$color-1: rgb(159,28,25);
-$color-2: rgb(101,209,251);
-$color-3: rgb(5,171,235);
-$color-4: rgb(255,133,0);
-$color-5: rgb(255,36,31);
+
 
 * {
   margin: auto;
@@ -38,15 +43,6 @@ header {
   padding-bottom: 20px;
   padding-left: 20px;
   background: #05abeb;
-  background-image: initial;
-  background-position-x: initial;
-  background-position-y: initial;
-  background-size: initial;
-  background-repeat-x: initial;
-  background-repeat-y: initial;
-  background-attachment: initial;
-  background-origin: initial;
-  background-clip: initial;
   background-color: rgb(5, 171, 235);
 }
 
@@ -110,15 +106,6 @@ header {
   padding-right: 5px;
   padding-bottom: 20px;
   padding-left: 5px;
-  background-image: initial;
-  background-position-x: initial;
-  background-position-y: initial;
-  background-size: initial;
-  background-repeat-x: initial;
-  background-repeat-y: initial;
-  background-attachment: initial;
-  background-origin: initial;
-  background-clip: initial;
   background-color: rgb(190, 236, 254);
   position: relative;
 }
@@ -128,9 +115,6 @@ header {
   background-color: white;
   width: 300px;
   padding: 1px;
-}
-
-canvas {
 }
 
 .control-box {
