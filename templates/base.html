@@ -4,6 +4,7 @@
   <title>Drawlephone</title>
   <link rel="stylesheet" type="text/css" href="/static/layout.css">
   <link rel="stylesheet" type="text/css" href="/static/style.css">
+  {% block stylesheets %}{% endblock %}
 </head>
 <body>
   <div class="container">
@@ -26,8 +27,6 @@
       <p class="center-footer">Created in the Code Fellows Python Dev Accelerator by Jason, Charlie, &amp; Ben</p>
     </footer>
   </div>
-  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

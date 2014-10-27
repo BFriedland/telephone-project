@@ -52,6 +52,14 @@ def retrieve_drawing():
     return drawing_data
 
 
+def get_prompt():
+    return "A sample prompt is not very fun to draw."
+
+
+def store_prompt():
+    pass
+
+
 @app.route('/')
 def show_test_page():
     return render_template('test_page.html')
@@ -74,6 +82,16 @@ def receive_drawing():
 @app.route('/test')
 def test():
     return render_template('base.html')
+
+
+@app.route('/get-first-prompt')
+def get_first_prompt():
+    return get_prompt()
+
+
+@app.route('/step_one')
+def step_one():
+    return render_template("step_one.html")
 
 
 @app.route('/login', methods=['GET', 'POST'])

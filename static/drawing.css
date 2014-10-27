@@ -1,0 +1,210 @@
+.section-title {
+  margin: auto;
+  max-width: 50%;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 2.5em;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: rgb(255,36,31);
+  text-transform: uppercase;
+  letter-spacing: -2px;
+}
+
+.drawing-prompt {
+  margin: auto;
+  max-width: 90%;
+  padding: 1em;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 2em;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: rgb(159,28,25);
+}
+
+.canvas-box {
+  margin: auto;
+  border: 1px black solid;
+  background-color: white;
+  width: 320px;
+  height: 320px;
+  padding: 1px;
+}
+
+.control-box {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.color-selectors {
+  list-style: none;
+  position: relative;
+  height: 40px;
+}
+
+.size-selectors {
+  list-style: none;
+  position: relative;
+  height: 40px;
+}
+
+.selector {
+  border-radius: 100%;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+}
+
+.huge {
+  height: 30px;
+  width: 30px;
+  background-color: black;
+  left: 0;
+  top: 0;
+}
+
+.large {
+  height: 20px;
+  width: 20px;
+  background-color: black;
+  left: 35px;
+  top: 5px;
+}
+
+.medium {
+  height: 12px;
+  width: 12px;
+  background-color: black;
+  top: 9px;
+  left: 60px;
+}
+
+.small {
+  height: 6px;
+  width: 6px;
+  background-color: black;
+  top: 12px;
+  left: 80px;
+}
+
+#clear {
+  position: absolute;
+  top: 45px;
+  left: 120px;
+  height: 30px;
+}
+
+.black {
+  background-color: black;
+  top: 0;
+  left: 0;
+}
+
+.white {
+  background-color: white;
+  top: 0;
+  left: 30px;
+}
+
+.red {
+  background-color: red;
+  top: 0;
+  left: 60px;
+}
+
+.yellow {
+  background-color: yellow;
+  top: 0;
+  left: 90px;
+  color: black;
+}
+
+.blue {
+  background-color: blue;
+  top: 0px;
+  left: 120px;
+}
+
+.aqua {
+  background-color: aqua;
+  top: 0px;
+  left: 120px;
+}
+
+.fuchsia {
+  background-color: fuchsia;
+  top: 0px;
+  left: 150px;
+}
+
+.gray {
+  background-color: gray;
+  top: 0px;
+  left: 180px;
+}
+
+.green {
+  background-color: green;
+  top: 0px;
+  left: 210px;
+}
+
+.lime {
+  background-color: lime;
+  top: 0px;
+  left: 240px;
+}
+
+.maroon {
+  background-color: maroon;
+  top: 0px;
+  left: 270px;
+}
+
+.navy {
+  background-color: navy;
+  top: 30px;
+  left: 0;
+}
+.olive {
+  background-color: olive;
+  top: 30px;
+  left: 30px;
+}
+
+.orange {
+  background-color: orange;
+  top: 30px;
+  left: 60px;
+}
+
+.purple {
+  background-color: purple;
+  top: 30px;
+  left: 90px;
+}
+
+.silver {
+  background-color: silver;
+  top: 30px;
+  left: 120px;
+}
+
+.teal {
+  background-color: teal;
+  top: 30px;
+  left: 150px;
+
+}
+
+.selected {
+  opacity: 0.5;
+  box-sizing: border-box;
+  border: 3px black solid;
+}
