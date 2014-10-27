@@ -49,7 +49,7 @@ def retrieve_drawing():
             json.dumps({"objects": [], "background": ""}).encode('utf-8')
             # This is a blank drawing
 
-    return drawing_data
+    return json.dumps(drawing_data)
 
 
 def get_prompt():
