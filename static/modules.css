@@ -4,30 +4,14 @@
 @import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic);
 
 
-/*  $color-1: rgb(159,28,25);
-    $color-2: rgb(101,209,251);
-    $color-3: rgb(5,171,235);
-    $color-4: rgb(255,133,0);
-    $color-5: rgb(255,36,31);
+/*  $color-1: rgb(159,28,25);   //DK RED
+    $color-2: rgb(101,209,251); //LT BLue
+    $color-3: rgb(5,171,235);   //DK BLUE
+    $color-4: rgb(255,133,0);   //ORANGE
+    $color-5: rgb(255,36,31);   //Bright red
 */
 
-.cf:before,
-.cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
-}
 
-.cf:after {
-    clear: both;
-}
-
-/**
- * For IE 6/7 only
- * Include this rule to trigger hasLayout and contain floats.
- */
-.cf {
-    zoom: 1;
-}
 
 
 

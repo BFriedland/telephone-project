@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drawlephone</title>
+  <link rel="stylesheet" type="text/css" href="/static/layout.css">
+  <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="cf">
+      <h1 class="main-title">Drawlephone</h1>
+      <div class="status-area">
+        <a href="{{ url_for('login') }}">Set username</a>
+        {% if session.username %}
+        <p> Logged in as {{ session.username | safe }}</p>
+        <a href="{{ url_for('logout') }}">Log out</a>
+        {% endif %}
+      </div>
+    </header>
+    <section id="content">
+      {% block body %}{% endblock %}
+    </section>
+    <footer class="cf">
+      <a class="left-footer" href="{{ url_for('logout') }}">Reset cookie</a>
+      <a class="right-footer" href="{{ url_for('show_test_page') }}">Help</a>
+      <p class="center-footer">Created in the Code Fellows Python Dev Accelerator by Jason, Charlie, &amp; Ben</p>
+    </footer>
+  </div>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

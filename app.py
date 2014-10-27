@@ -71,6 +71,11 @@ def receive_drawing():
     return last_pic
 
 
+@app.route('/test')
+def test():
+    return render_template('base.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':

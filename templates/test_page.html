@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Paper Telephone</title>
+  <title>Drawlephone</title>
   <link rel="stylesheet" type="text/css" href="/static/modules.css">
 </head>
 <body>
   <header>
-    <h1 class="main-title">Paper Telephone<br> Game</h1>
-    <hgroup class="project-title">
-      <h2>A test page for drawing &amp; writing</h2>
-    </hgroup>
-    <a href="{{ url_for('login') }}">Set username</a>
-    {% if session.username %}
-    <p> Logged in as {{ session.username | safe }}</p>
-    <a href="{{ url_for('logout') }}">Log out</a>
-    {% endif %}
+    <h1 class="main-title">Drawlephone</h1>
+    <div class="status-area">
+      <a href="{{ url_for('login') }}">Set username</a>
+      {% if session.username %}
+      <p> Logged in as {{ session.username | safe }}</p>
+      <a href="{{ url_for('logout') }}">Log out</a>
+      {% endif %}
+    </div>
   </header>
   <section class="main">
     <h1 class="section-title">Draw a picture</h1>
