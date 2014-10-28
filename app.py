@@ -9,6 +9,7 @@ import json
 import os
 from functools import wraps
 import random
+import datetime
 import game
 
 
@@ -49,9 +50,51 @@ def get_prompt():
     return "A sample prompt is not very fun to draw."
 
 
-def store_prompt(prompt):
-    print prompt
-    print session['username']
+def create_game():
+    # execute a DB_CREATE_GAME script, RETURNING id for the game
+    with closing(game.connect_db()) as db:
+        cur = db.cursor()
+        cur.execute(game.DB_CREATE_GAME)
+        game_id = cur.fetchone()[0]
+        cur.commit()
+        return game_id
+
+
+def store_data(game_column, tablename, data):
+    ''' Accepts a PSQL content table name and data to store in that table,
+    inserts the data, and conducts a join on the games table. '''
+    if not prompt:
+        raise ValueError("Prompt data not supplied to store_prompt")
+
+    # If this is the first prompt in a series, create a new game
+    # and store its id in the session cookie.
+    if game_column == "first_prompt_id":
+        session['game_id'] = create_game()
+
+    with closing(game.connect_db()) as db:
+        cur = db.cursor()
+        username = session['username']
+        now = datetime.datetime.utcnow()
+        cur.execute(game.DB_INSERT_CONTENT, [tablename, username, data, now])
+        inserted_data_id = cur.fetchone()[0]
+        cur.commit()
+        cur.execute(game.DB_UPDATE_GAMES,
+                    [game_column, inserted_data_id, session['game_id']])
+        cur.commit()
+
+
+def store_first_prompt(prompt):
+    if not prompt:
+        raise ValueError("Prompt data not supplied to store_first_prompt")
+
+    with closing(game.connect_db()) as db:
+        con = get_database_connection()
+        cur = con.cursor()
+        tablename = 'prompts'
+        username = session['username']
+        now = datetime.datetime.utcnow()
+        cur.execute(game.DB_INSERT_CONTENT, [tablename, username, prompt, now])
+        cur.commit()
 
 
 @app.route('/')
