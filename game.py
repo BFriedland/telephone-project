@@ -6,7 +6,7 @@ from contextlib import closing
 
 PROMPT_TABLE_SCHEMA = """
 DROP TABLE IF EXISTS prompts;
-CREATE TABLE prompts(
+CREATE TABLE "prompts" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
     data VARCHAR(200) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE prompts(
 
 IMAGE_TABLE_SCHEMA = """
 DROP TABLE IF EXISTS images;
-CREATE TABLE images(
+CREATE TABLE "images" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
     data TEXT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE images(
 
 GAME_TABLE_SCHEMA = """
 DROP TABLE IF EXISTS games;
-CREATE TABLE games(
+CREATE TABLE "games" (
     id serial PRIMARY KEY,
     first_prompt_id INTEGER REFERENCES prompts,
     first_image_id INTEGER REFERENCES images,
