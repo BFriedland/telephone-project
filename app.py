@@ -5,10 +5,10 @@ from flask import request
 from flask import session
 from flask import redirect
 from flask import url_for
-import io
 import json
 import os
 from functools import wraps
+import random
 
 app = Flask(__name__)
 
@@ -21,48 +21,36 @@ def requires_username(view):
     @wraps(view)
     def decorated(*args, **kwargs):
         if 'username' not in session:
-            return redirect(url_for('login'))
+            print 'Adding username'
+            fakenames = ["Homer", "Marge", "Bart", "Lisa", "Maggie", "Krusty",
+                         "Itchy", "Scratchy", "Dr. Hibbert", "Nelson", "Jimbo"]
+            session['username'] = random.sample(fakenames, 1)
+
         return view(*args, **kwargs)
     return decorated
 
 
 def store_drawing(drawing_data):
-    filename = session['username'] + "_drawing"
-    filename = "".join([c for c in filename if c.isalpha() or c.isdigit()
-                        or c == '_']).strip()
-    filename = filename + ".txt"
-    with io.open(filename, 'wb') as tempfile:
-        json.dump(drawing_data, tempfile)
+    print drawing_data
+    print session['username']
 
 
 def retrieve_drawing():
-    filename = session['username'] + "_drawing"
-    filename = "".join([c for c in filename if c.isalpha() or c.isdigit()
-                        or c == '_']).strip()
-    filename = filename + ".txt"
-
-    try:
-        with io.open(filename, 'r') as tempfile:
-            drawing_data = json.load(tempfile)
-    except(IOError):
-        drawing_data = \
-            json.dumps({"objects": [], "background": ""}).encode('utf-8')
-            # This is a blank drawing
-
-    return json.dumps(drawing_data)
+    return json.dumps({"objects": [], "background": ""}).encode('utf-8')
 
 
 def get_prompt():
     return "A sample prompt is not very fun to draw."
 
 
-def store_prompt():
-    pass
+def store_prompt(prompt):
+    print prompt
+    print session['username']
 
 
 @app.route('/')
 def show_test_page():
-    return render_template('test_page.html')
+    return render_template('step_one.html')
 
 
 @app.route('/logout')
@@ -71,12 +59,18 @@ def logout():
     return redirect(url_for('show_test_page'))
 
 
-@requires_username
 @app.route('/new-drawing', methods=['POST'])
+@requires_username
 def receive_drawing():
-    last_pic = retrieve_drawing()
     store_drawing(request.json)
-    return last_pic
+    return "OK"
+
+
+@app.route('/new-prompt', methods=['POST'])
+@requires_username
+def receive_prompt():
+    store_prompt(request.form['prompt'])
+    return "OK"
 
 
 @app.route('/test')
@@ -84,14 +78,15 @@ def test():
     return render_template('base.html')
 
 
-@app.route('/get-first-prompt')
-def get_first_prompt():
-    return get_prompt()
-
-
 @app.route('/step_one')
 def step_one():
     return render_template("step_one.html")
+
+
+@app.route('/step_two')
+def step_two():
+    prompt = get_prompt()
+    return render_template("step_two.html", prompt=prompt)
 
 
 @app.route('/login', methods=['GET', 'POST'])

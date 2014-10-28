@@ -20,12 +20,12 @@
 html,body {
   margin:0;
   padding:0;
-  height:100%; /* needed for container min-height */
+  min-height:100%; /* needed for container min-height */
 }
 
 .container {
   position: relative;
-  height: auto !important;
+  height: auto;
   min-height: 100%;
 }
 
@@ -54,11 +54,9 @@ header {
 
 footer {
   box-sizing: border-box;
-  position: absolute;
   padding: 2em;
   bottom: 0;
   width: 100%;
-  min-height: 10%;
 }
 
 .left-footer {

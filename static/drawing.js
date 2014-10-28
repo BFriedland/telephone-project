@@ -1,44 +1,40 @@
-var drawingCanvas = new fabric.Canvas('drawing', {
-  isDrawingMode: true
-});
+$(function () {
+  var drawingCanvas = new fabric.Canvas('drawing', {
+    isDrawingMode: true
+  });
 
-var displayCanvas = new fabric.StaticCanvas('oldpic');
+  drawingCanvas.setHeight(320);
+  drawingCanvas.setWidth(320);
 
-fabric.Object.prototype.transparentCorners = false;
+  fabric.Object.prototype.transparentCorners = false;
 
-drawingCanvas.freeDrawingBrush.width = 30;
+  drawingCanvas.freeDrawingBrush.width = 30;
 
-$('.color-selectors').on('click', 'li', function () {
-  drawingCanvas.freeDrawingBrush.color = $(this).css('background-color');
-  $(this).siblings().removeClass('selected');
-  $(this).addClass('selected');
-});
+  $('.color-selectors').on('click', 'li', function () {
+    drawingCanvas.freeDrawingBrush.color = $(this).css('background-color');
+    $(this).siblings().removeClass('selected');
+    $(this).addClass('selected');
+  });
 
-$('.size-selectors').on('click', 'li', function () {
-  drawingCanvas.freeDrawingBrush.width = Number($(this).css('height').slice(0, -2));
-  $(this).siblings().removeClass('selected');
-  $(this).addClass('selected');
-});
+  $('.size-selectors').on('click', '.sizer', function () {
+    drawingCanvas.freeDrawingBrush.width = Number($(this).children().first()
+                                                   .css('height').slice(0, -2));
+    $('.sizer .selector').removeClass('selected');
+    $(this).children().first().addClass('selected');
+  });
 
-$('#clear').on('click', function () {
-  drawingCanvas.clear();
-});
-
-$('#submit-text').on('click', function () {
-  $('.drawing-prompt').text($('#textbox').val());
-});
-
-$('#upload').on('click', function () {
-  picJSON = drawingCanvas.toJSON();
-  $.ajax({
-    type: 'POST',
-    url: '/new-drawing',
-    data: JSON.stringify(picJSON),
-    contentType: "application/json; charset=utf-8",
-    dataType: "json"})
-  .done(function (data) {
+  $('#clear').on('click', function () {
     drawingCanvas.clear();
-    displayCanvas.loadFromJSON(data, displayCanvas.renderAll.bind(displayCanvas));
+  });
+
+  $('#upload').on('click', function () {
+    picJSON = drawingCanvas.toJSON();
+    $.ajax({
+      type: 'POST',
+      url: '/new-drawing',
+      data: JSON.stringify(picJSON),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json"});
+    window.open('/step_three', '_self');
   });
 });
-
