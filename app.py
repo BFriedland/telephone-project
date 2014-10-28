@@ -11,6 +11,7 @@ from functools import wraps
 import random
 import datetime
 import game
+from contextlib import closing
 
 
 app = Flask(__name__)
@@ -28,8 +29,8 @@ def requires_username(view):
     @wraps(view)
     def decorated(*args, **kwargs):
         if 'username' not in session:
-            fakenames = ["Homer", "Marge", "Bart", "Lisa", "Maggie", "Krusty",
-                         "Itchy", "Scratchy", "Dr. Hibbert", "Nelson", "Jimbo"]
+            fakenames = ['Homer', 'Marge', 'Bart', 'Lisa', 'Maggie', 'Krusty',
+                         'Itchy', 'Scratchy', 'Dr. Hibbert', 'Nelson', 'Jimbo']
             session['username'] = random.sample(fakenames, 1)[0]
 
         return view(*args, **kwargs)
@@ -46,7 +47,7 @@ def get_drawing():
 
 
 def get_prompt():
-    return "A sample prompt is not very fun to draw."
+    return 'A sample prompt is not very fun to draw.'
 
 
 def create_game():
@@ -55,19 +56,19 @@ def create_game():
         cur = db.cursor()
         cur.execute(game.DB_CREATE_GAME)
         game_id = cur.fetchone()[0]
-        cur.commit()
+        db.commit()
         return game_id
 
 
 def store_data(game_column, tablename, data):
     ''' Accepts a PSQL content table name and data to store in that table,
     inserts the data, and conducts a join on the games table. '''
-    if not prompt:
-        raise ValueError("Prompt data not supplied to store_prompt")
+    if not data:
+        raise ValueError('Prompt data not supplied to store_prompt')
 
     # If this is the first prompt in a series, create a new game
     # and store its id in the session cookie.
-    if game_column == "first_prompt_id":
+    if game_column == 'first_prompt_id':
         session['game_id'] = create_game()
 
     with closing(game.connect_db()) as db:
@@ -76,24 +77,23 @@ def store_data(game_column, tablename, data):
         now = datetime.datetime.utcnow()
         cur.execute(game.DB_INSERT_CONTENT, [tablename, username, data, now])
         inserted_data_id = cur.fetchone()[0]
-        cur.commit()
+        # cur.commit()
         cur.execute(game.DB_UPDATE_GAMES,
                     [game_column, inserted_data_id, session['game_id']])
-        cur.commit()
+        db.commit()
 
 
 def store_first_prompt(prompt):
     if not prompt:
-        raise ValueError("Prompt data not supplied to store_first_prompt")
+        raise ValueError('Prompt data not supplied to store_first_prompt')
 
     with closing(game.connect_db()) as db:
-        con = get_database_connection()
-        cur = con.cursor()
+        cur = db.cursor()
         tablename = 'prompts'
         username = session['username']
         now = datetime.datetime.utcnow()
         cur.execute(game.DB_INSERT_CONTENT, [tablename, username, prompt, now])
-        cur.commit()
+        db.commit()
 
 
 @app.route('/')
@@ -109,14 +109,14 @@ def logout():
 
 @app.route('/step_one')
 def step_one():
-    return render_template("step_one.html")
+    return render_template('step_one.html')
 
 
 @app.route('/step_two', methods=['POST'])
 @requires_username
 def step_two():
-    store_prompt(request.form['prompt'])
-    response = {'html': render_template("step_two.html"),
+    store_data('first_prompt_id', 'prompts', request.form['prompt'])
+    response = {'html': render_template('step_two.html'),
                 'prompt': get_prompt()}
     return json.dumps(response)
 
@@ -124,8 +124,8 @@ def step_two():
 @app.route('/step_three', methods=['POST'])
 @requires_username
 def step_three():
-    store_drawing(request.json)
-    response = {'html': render_template("step_three.html"),
+    store_data('first_image_id', 'images', request.json)
+    response = {'html': render_template('step_three.html'),
                 'drawing': get_drawing()}
     return json.dumps(response)
 
@@ -133,8 +133,8 @@ def step_three():
 @app.route('/step_four', methods=['POST'])
 @requires_username
 def step_four():
-    store_prompt(request.form['prompt'])
-    response = {'html': render_template("step_two.html"),
+    store_data('second_prompt_id', 'prompts', request.form['prompt'])
+    response = {'html': render_template('step_two.html'),
                 'prompt': get_prompt()}
     return json.dumps(response)
 
@@ -142,8 +142,8 @@ def step_four():
 @app.route('/step_five', methods=['POST'])
 @requires_username
 def step_five():
-    store_drawing(request.json)
-    response = {'html': render_template("step_three.html"),
+    store_data('second_image_id', 'images', request.json)
+    response = {'html': render_template('step_three.html'),
                 'drawing': get_drawing()}
     return json.dumps(response)
 
@@ -151,14 +151,14 @@ def step_five():
 @app.route('/final', methods=['POST'])
 @requires_username
 def final_step():
-    store_prompt(request.form['prompt'])
-    return "OK"
+    store_data('third_prompt_id', 'prompts', request.form['prompt'])
+    return 'OK'
 
 
 @app.route('/show_games')
 @requires_username
 def show_games():
-    return render_template("show_games.html", user=session['username'])
+    return render_template('show_games.html', user=session['username'])
 
 
 @app.route('/login', methods=['GET', 'POST'])
