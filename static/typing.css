@@ -30,6 +30,7 @@
 #prompt-entry {
   display: block;
   margin: auto;
+  margin-top: 2em;
   border: 1px black solid;
   background-color: white;
   width: 320px;

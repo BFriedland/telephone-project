@@ -30,7 +30,7 @@ $('#upload').on('click', function () {
   picJSON = drawingCanvas.toJSON();
   $.ajax({
     type: 'POST',
-    url: '/step_three',
+    url: '/step_five',
     data: JSON.stringify(picJSON),
     contentType: "application/json; charset=utf-8",
     dataType: "json"})
@@ -44,6 +44,6 @@ $('#upload').on('click', function () {
     displayCanvas.setHeight(320);
     displayCanvas.setWidth(320);
     displayCanvas.loadFromJSON(response.drawing, displayCanvas.renderAll.bind(displayCanvas));
-    $.getScript('/static/step_three.js');
+    $.getScript('/static/step_five.js');
   });
 });
