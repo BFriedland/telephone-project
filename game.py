@@ -23,7 +23,7 @@ CREATE TABLE images(
     created TIMESTAMP NOT NULL
     )
 """
-#imgdata is datatype TEXT for now--don't know how long these strings will be
+# imgdata is datatype TEXT for now--don't know how long these strings will be
 
 GAME_TABLE_SCHEMA = """
 DROP TABLE IF EXISTS games;
@@ -37,13 +37,8 @@ CREATE TABLE games(
     )
 """
 
-app = Flask(__name__)
-app.config['DATABASE'] = os.environ.get(
-    'DATABASE_URL', 'dbname=telephone_db user=store'
-)
 
-
-def connect_db():
+def connect_db(app=Flask(__name__)):
     """Return a connection to the configured database"""
     return psycopg2.connect(app.config['DATABASE'])
 
@@ -58,11 +53,3 @@ def init_db():
         db.commit()
         db.cursor().execute(GAME_TABLE_SCHEMA)
         db.commit()
-
-
-@app.route('/')
-def hello():
-    pass
-
-if __name__ == '__main__':
-    app.run(debug=True)

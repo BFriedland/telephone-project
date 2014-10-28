@@ -9,11 +9,17 @@ import json
 import os
 from functools import wraps
 import random
+import game
+
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get(
     'FLASK_SECRET_KEY', 'sooperseekritvaluenooneshouldknow'
+)
+
+app.config['DATABASE'] = os.environ.get(
+    'DATABASE_URL', 'dbname=telephone_db user=store'
 )
 
 
