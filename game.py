@@ -32,8 +32,8 @@ CREATE TABLE games(
     first_prompt_id INTEGER REFERENCES prompts,
     first_image_id INTEGER REFERENCES images,
     second_prompt_id INTEGER REFERENCES prompts,
-    second_image_id INTEGER REFERENCES images
-    third_prompt_id INTEGER REFERENCES prompts,
+    second_image_id INTEGER REFERENCES images,
+    third_prompt_id INTEGER REFERENCES prompts
     )
 """
 
@@ -53,13 +53,6 @@ VALUES (
 RETURNING id
 """
 
-# update games table to have this new id in the correct slot
-DB_UPDATE_GAMES = """
-UPDATE games SET %s=%s WHERE id=%s
-"""
-# UPDATE games SET game_step=inserted_data_id WHERE id=session['game_id']
-
-
 
 # Generic PSQL update-game-content string.
 # Can be divided into separate image
@@ -72,6 +65,13 @@ INSERT INTO %s (username, data, created) VALUES (%s, %s, %s) RETURNING id
 # Example:
 # INSERT INTO images (username, imgdata, created)
 #   VALUES (session['username'], jsonified_image_data(?), datetime.now())
+
+
+# update games table to have this new id in the correct slot
+DB_UPDATE_GAMES = """
+UPDATE games SET %s=%s WHERE id=%s
+"""
+# UPDATE games SET game_column=inserted_data_id WHERE id=session['game_id']
 
 
 def connect_db(app=Flask(__name__)):
