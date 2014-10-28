@@ -40,6 +40,10 @@ CREATE TABLE games(
 
 def connect_db(app=Flask(__name__)):
     """Return a connection to the configured database"""
+    if 'DATABASE' not in app.config:
+        app.config['DATABASE'] = os.environ.get(
+            'DATABASE_URL', 'dbname=telephone_db user=store')
+
     return psycopg2.connect(app.config['DATABASE'])
 
 
