@@ -24,7 +24,7 @@ def requires_username(view):
             print 'Adding username'
             fakenames = ["Homer", "Marge", "Bart", "Lisa", "Maggie", "Krusty",
                          "Itchy", "Scratchy", "Dr. Hibbert", "Nelson", "Jimbo"]
-            session['username'] = random.sample(fakenames, 1)
+            session['username'] = random.sample(fakenames, 1)[0]
 
         return view(*args, **kwargs)
     return decorated
@@ -49,14 +49,14 @@ def store_prompt(prompt):
 
 
 @app.route('/')
-def show_test_page():
+def home():
     return render_template('step_one.html')
 
 
 @app.route('/logout')
 def logout():
     session.pop('username', None)
-    return redirect(url_for('show_test_page'))
+    return redirect(url_for('home'))
 
 
 @app.route('/new-drawing', methods=['POST'])
@@ -71,11 +71,6 @@ def receive_drawing():
 def receive_prompt():
     store_prompt(request.form['prompt'])
     return "OK"
-
-
-@app.route('/test')
-def test():
-    return render_template('base.html')
 
 
 @app.route('/step_one')
@@ -93,7 +88,7 @@ def step_two():
 def login():
     if request.method == 'POST':
         session['username'] = request.form['username'].encode('utf-8')
-        return redirect(url_for('show_test_page'))
+        return redirect(url_for('home'))
     return render_template('login.html')
 
 if __name__ == '__main__':
