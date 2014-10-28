@@ -1,185 +1,169 @@
-/*Basic styling*/
-
-@import url(http://fonts.googleapis.com/css?family=Open+Sans:400italic,800italic,400,800);
-@import url(http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic);
-
-
-/*  $color-1: rgb(159,28,25);
-    $color-2: rgb(101,209,251);
-    $color-3: rgb(5,171,235);
-    $color-4: rgb(255,133,0);
-    $color-5: rgb(255,36,31);
-*/
-
-.cf:before,
-.cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
-}
-
-.cf:after {
-    clear: both;
-}
-
-/**
- * For IE 6/7 only
- * Include this rule to trigger hasLayout and contain floats.
- */
-.cf {
-    zoom: 1;
-}
-
-
-
-
-* {
+.section-title {
   margin: auto;
+  max-width: 50%;
   text-align: center;
-}
-
-header {
-  padding-top: 20px;
-  padding-right: 20px;
-  padding-bottom: 20px;
-  padding-left: 20px;
-  background: #05abeb;
-  background-color: rgb(5, 171, 235);
-}
-
-.main-title {
   font-family: 'Open Sans', sans-serif;
-  font-size: 3em;
+  font-size: 2.5em;
   font-style: normal;
   font-variant: normal;
   font-weight: bold;
   line-height: 1;
-  color: white;
+  color: rgb(255,36,31);
   text-transform: uppercase;
   letter-spacing: -2px;
-  padding-right: .75em;
-  position: relative;
-  float: left;
-  display: block;
-  top: -40px;
 }
 
-.project-tile {
-  position: relative;
-  float: left;
-  display: block;
-}
-
-.project-title h2 {
-  font-size: 1.6em;
+.drawing-prompt {
+  margin: auto;
+  max-width: 90%;
+  padding: 1em;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 2em;
   font-style: normal;
   font-variant: normal;
   font-weight: bold;
-  line-height: normal;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0;
-}
-
-.project-title h3 {
-  font-family: 'Open Sans', sans-serif;
-  font-size: 1.2em;
-  font-style: italic;
-  font-variant: normal;
-  font-weight: normal;
-  line-height: normal;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0;
-}
-
-.project-title h4 {
-  font-family: 'Droid Serif', serif;
-  font-size: 0.8em;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: normal;
-  line-height: normal;
-  color: rgba(255, 255, 255, 0.95);
-  margin: 0;
-}
-
-.main {
-  padding-top: 20px;
-  padding-right: 5px;
-  padding-bottom: 20px;
-  padding-left: 5px;
-  background-color: rgb(190, 236, 254);
-  position: relative;
+  line-height: 1;
+  color: rgb(159,28,25);
 }
 
 .canvas-box {
+  margin: auto;
   border: 1px black solid;
   background-color: white;
-  width: 300px;
+  width: 320px;
+  height: 320px;
   padding: 1px;
+}
+
+#drawing {
+  width: 320px;
+  height: 320px;
 }
 
 .control-box {
   position: relative;
-  margin: 0;
+  margin: auto;
+  width: 320px;
+  padding: 0;
+}
+
+.control-box h3 {
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1.25em;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: rgb(159,28,25);
+}
+
+.button-box {
+  width: 320px;
+  list-style: none;
+  position: relative;
+  margin: auto;
+  padding: 0;
+}
+
+.button {
+  float: left;
+  width: 100px;
+  margin: 10px;
+  padding: 1em;
+  border-radius: 4px;
+  background: #ff241f;
+  text-align: center;
+  text-decoration: none;
+  font: bold 1.25em/1 "Open Sans", sans-serif;
+  letter-spacing: 1px;
+  color: white;
+  text-transform: uppercase;
+  text-shadow: 0px -1px 0px #d20500;
+  transition: all .2s ease;
+  transition-property: all;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+  transition-delay: initial;
+}
+
+.button:hover {
+  cursor: pointer;
+  background-color: rgb(159,28,25);
+}
+
+.size-selectors {
+  list-style: none;
+  position: relative;
+  width: 170px;
+  margin: auto;
   padding: 0;
 }
 
 .color-selectors {
   list-style: none;
   position: relative;
-  height: 40px;
-}
-
-.size-selectors {
-  list-style: none;
-  position: relative;
-  height: 40px;
+  width: 240px;
+  margin: auto;
+  padding: 0;
 }
 
 .selector {
   border-radius: 100%;
   width: 25px;
   height: 25px;
-  position: absolute;
+  float: left;
+}
+
+.sizer {
+  width: 36px;
+  height: 36px;
+  float: left;
+  margin: 2px;
+  border: 1px black solid;
 }
 
 .huge {
+  position: relative;
   height: 30px;
   width: 30px;
   background-color: black;
-  left: 0;
-  top: 0;
+  left: 3px;
+  top: 3px;
 }
 
 .large {
+  position: relative;
   height: 20px;
   width: 20px;
   background-color: black;
-  left: 35px;
-  top: 5px;
+  left: 8px;
+  top: 8px;
 }
 
 .medium {
+  position: relative;
   height: 12px;
   width: 12px;
   background-color: black;
-  top: 9px;
-  left: 60px;
+  top: 12px;
+  left: 12px;
 }
 
 .small {
+  position: relative;
   height: 6px;
   width: 6px;
   background-color: black;
-  top: 12px;
-  left: 80px;
+  top: 15px;
+  left: 15px;
 }
 
-#clear {
-  position: absolute;
-  top: 45px;
-  left: 120px;
-  height: 30px;
+.color-selectors .selector {
+  margin: 2px;
 }
+
 
 .black {
   background-color: black;
@@ -284,15 +268,8 @@ header {
 
 }
 
-
 .selected {
   opacity: 0.5;
   box-sizing: border-box;
   border: 3px black solid;
-
-}
-
-textarea {
-  border: 1px black solid;
-  display: block;
 }
