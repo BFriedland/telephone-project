@@ -42,7 +42,7 @@
   line-height: 1;
 }
 
-.button {
+.t-button {
   display: block;
   margin: auto;
   margin-top: 10px;
@@ -64,7 +64,7 @@
   transition-delay: initial;
 }
 
-.button:hover {
+.t-button:hover {
   cursor: pointer;
   background-color: rgb(159,28,25);
 }

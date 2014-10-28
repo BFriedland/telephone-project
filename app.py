@@ -9,7 +9,7 @@ import json
 import os
 from functools import wraps
 import random
-import game
+# import game
 
 
 app = Flask(__name__)
@@ -27,7 +27,6 @@ def requires_username(view):
     @wraps(view)
     def decorated(*args, **kwargs):
         if 'username' not in session:
-            print 'Adding username'
             fakenames = ["Homer", "Marge", "Bart", "Lisa", "Maggie", "Krusty",
                          "Itchy", "Scratchy", "Dr. Hibbert", "Nelson", "Jimbo"]
             session['username'] = random.sample(fakenames, 1)[0]
@@ -65,29 +64,25 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route('/new-drawing', methods=['POST'])
-@requires_username
-def receive_drawing():
-    store_drawing(request.json)
-    return "OK"
-
-
-@app.route('/new-prompt', methods=['POST'])
-@requires_username
-def receive_prompt():
-    store_prompt(request.form['prompt'])
-    return "OK"
-
-
 @app.route('/step_one')
 def step_one():
     return render_template("step_one.html")
 
 
-@app.route('/step_two')
+@app.route('/step_two', methods=['POST'])
+@requires_username
 def step_two():
-    prompt = get_prompt()
-    return render_template("step_two.html", prompt=prompt)
+    store_prompt(request.form['prompt'])
+    response = {'html': render_template("step_two.html"),
+                'prompt': get_prompt()}
+    return json.dumps(response)
+
+
+@app.route('/step_three', methods=['POST'])
+@requires_username
+def step_three():
+    store_drawing(request.json)
+    return "OK"
 
 
 @app.route('/login', methods=['GET', 'POST'])

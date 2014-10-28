@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="/static/typing.css">
+<link rel="stylesheet" type="text/css" href="/static/drawing.css">
 {% endblock %}
 {% block body %}
 <h1 class="section-title">Write a sentence</h1>
 <h2 class="instructions">Try to make it something fun to draw</h2>
 <textarea id="prompt-entry" rows="3" cols="42"></textarea>
-<button id="submit-text" class="button">Submit</button>
+<button id="submit-text" class="t-button">Submit</button>
 {% endblock %}
 {% block scripts %}
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="/static/typing.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
+<script type="text/javascript" src="/static/step_one.js"></script>
 {% endblock %}
