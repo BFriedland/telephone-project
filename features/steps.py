@@ -3,11 +3,13 @@ import lettuce
 from flask import url_for
 from app import app
 import json
+from game import init_db
 
 
 @lettuce.before.all
 def setup_app():
     print "This happens before all the lettuce tests begin"
+    init_db()
     app.config['TESTING'] = True
 
 

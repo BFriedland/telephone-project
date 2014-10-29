@@ -12,7 +12,7 @@ PROMPT_TABLE_SCHEMA = """
 CREATE TABLE "prompts" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
-    data VARCHAR(MAX) NOT NULL,
+    data VARCHAR(500) NOT NULL,
     created TIMESTAMP NOT NULL
     )
 """
