@@ -25,6 +25,8 @@ app.config['DATABASE'] = os.environ.get(
     'DATABASE_URL', 'dbname=telephone_db user=store'
 )
 
+sorry_image = '{"objects": [{"opacity": 1, "strokeMiterLimit": 10, "height": 0, "visible": true, "stroke": "rgb(0, 0, 128)", "fill": null, "angle": 0, "flipX": false, "flipY": false, "top": 93, "scaleX": 1, "scaleY": 1, "strokeLineJoin": "round", "width": 1, "backgroundColor": "", "clipTo": null, "type": "path", "strokeLineCap": "round", "strokeDashArray": null, "strokeWidth": 30, "originY": "center", "originX": "center", "path": [["M", 0, 0], ["Q", 0, 0, 0.5, 0], ["L", 1, 0]], "shadow": null, "pathOffset": {"y": 0, "x": 0}, "left": 103.5}, {"opacity": 1, "strokeMiterLimit": 10, "height": 0, "visible": true, "stroke": "rgb(0, 0, 128)", "fill": null, "angle": 0, "flipX": false, "flipY": false, "top": 94, "scaleX": 1, "scaleY": 1, "strokeLineJoin": "round", "width": 1, "backgroundColor": "", "clipTo": null, "type": "path", "strokeLineCap": "round", "strokeDashArray": null, "strokeWidth": 30, "originY": "center", "originX": "center", "path": [["M", 0, 0], ["Q", 0, 0, 0.5, 0], ["L", 1, 0]], "shadow": null, "pathOffset": {"y": 0, "x": 0}, "left": 212.5}, {"opacity": 1, "strokeMiterLimit": 10, "height": 77, "visible": true, "stroke": "rgb(255, 0, 0)", "fill": null, "angle": 0, "flipX": false, "flipY": false, "top": 218.5, "scaleX": 1, "scaleY": 1, "strokeLineJoin": "round", "width": 181, "backgroundColor": "", "clipTo": null, "type": "path", "strokeLineCap": "round", "strokeDashArray": null, "strokeWidth": 12, "originY": "center", "originX": "center", "path": [["M", 0, 54], ["Q", 0, 54, 0.5, 54], ["Q", 1, 54, 0.75, 53.5], ["Q", 0.5, 53, 1, 51.5], ["Q", 1.5, 50, 3.5, 48.5], ["Q", 5.5, 47, 7.5, 44.5], ["Q", 9.5, 42, 11.5, 40.5], ["Q", 13.5, 39, 15.5, 37], ["Q", 17.5, 35, 20, 33], ["Q", 22.5, 31, 25, 29.5], ["Q", 27.5, 28, 30, 27], ["Q", 32.5, 26, 34.5, 25], ["Q", 36.5, 24, 39, 23], ["Q", 41.5, 22, 44.5, 21], ["Q", 47.5, 20, 50, 19], ["Q", 52.5, 18, 55, 17], ["Q", 57.5, 16, 60, 14.5], ["Q", 62.5, 13, 64.5, 12.5], ["Q", 66.5, 12, 68.5, 11.5], ["Q", 70.5, 11, 72, 10], ["Q", 73.5, 9, 76, 8], ["Q", 78.5, 7, 81.5, 5.5], ["Q", 84.5, 4, 87, 3], ["Q", 89.5, 2, 92.5, 1.5], ["Q", 95.5, 1, 99, 0.5], ["Q", 102.5, 0, 107, 0], ["Q", 111.5, 0, 114, 0], ["Q", 116.5, 0, 119.5, 0], ["Q", 122.5, 0, 125, 0], ["Q", 127.5, 0, 131, 1], ["Q", 134.5, 2, 136.5, 3], ["Q", 138.5, 4, 140.5, 5], ["Q", 142.5, 6, 144, 7], ["Q", 145.5, 8, 147.5, 9.5], ["Q", 149.5, 11, 151.5, 12], ["Q", 153.5, 13, 154.5, 14], ["Q", 155.5, 15, 156.5, 16.5], ["Q", 157.5, 18, 158.5, 19], ["Q", 159.5, 20, 160, 21.5], ["Q", 160.5, 23, 161.5, 24.5], ["Q", 162.5, 26, 163.5, 28], ["Q", 164.5, 30, 165, 32], ["Q", 165.5, 34, 166, 35], ["Q", 166.5, 36, 167, 37], ["Q", 167.5, 38, 168.5, 39], ["Q", 169.5, 40, 170, 41.5], ["Q", 170.5, 43, 171, 44.5], ["Q", 171.5, 46, 172, 47.5], ["Q", 172.5, 49, 173.5, 51], ["Q", 174.5, 53, 175.5, 55], ["Q", 176.5, 57, 177, 58.5], ["Q", 177.5, 60, 178, 62], ["Q", 178.5, 64, 179, 64.5], ["Q", 179.5, 65, 179.5, 65.5], ["Q", 179.5, 66, 179.5, 66.5], ["Q", 179.5, 67, 179.5, 67], ["Q", 179.5, 67, 179.5, 67.5], ["Q", 179.5, 68, 180, 68.5], ["Q", 180.5, 69, 180.5, 70], ["Q", 180.5, 71, 180.5, 72], ["Q", 180.5, 73, 180.5, 74], ["Q", 180.5, 75, 180.5, 75.5], ["Q", 180.5, 76, 180.5, 76.5], ["Q", 180.5, 77, 181, 77], ["L", 181.5, 77]], "shadow": null, "pathOffset": {"y": 0, "x": 0}, "left": 161.75}], "background": ""}'
+
 
 def connect_db():
     """Return a connection to the configured database"""
@@ -62,20 +64,9 @@ def requires_username(view):
 
 
 @requires_username
-def store_drawing(drawing_data):
-    print drawing_data
-    print session['username']
-
-
-@requires_username
-def get_drawing(step_to_complete):
-    pass
-
-
-@requires_username
 def get_first_prompt():
     #Retrieves a first prompt from a game that the user has not contributed to.
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
         cur.execute(game.DB_GET_FIRST_PROMPT_A, [username])
@@ -86,13 +77,15 @@ def get_first_prompt():
         p2 = set(cur.fetchall())
         first_prompts = p1.intersection(p2)
         db.commit()
-    return  first_prompts.pop()
+    if first_prompts:
+        return first_prompts.pop()
+    return "Database could not find an appropriate game"
 
 
 @requires_username
 def get_second_prompt():
     #Retrieves a first prompt from a game that the user has not contributed to.
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
         cur.execute(game.DB_GET_SECOND_PROMPT_A, [username])
@@ -103,12 +96,15 @@ def get_second_prompt():
         p2 = set(cur.fetchall())
         second_prompts = p1.intersection(p2)
         db.commit()
-    return  second_prompts.pop()
+    if second_prompts:
+        return second_prompts.pop()
+    return "Database could not find an appopriate game"
+
 
 @requires_username
 def get_first_image():
     #Retrieves a first prompt from a game that the user has not contributed to.
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
         cur.execute(game.DB_GET_FIRST_IMAGE_A, [username])
@@ -119,12 +115,15 @@ def get_first_image():
         p2 = set(cur.fetchall())
         first_images = p1.intersection(p2)
         db.commit()
-    return  first_images.pop()
+    if first_images:
+        return first_images.pop()[0]
+    return sorry_image
+
 
 @requires_username
 def get_second_image():
     #Retrieves a first prompt from a game that the user has not contributed to.
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
         cur.execute(game.DB_GET_SECOND_IMAGE_A, [username])
@@ -135,7 +134,10 @@ def get_second_image():
         p2 = set(cur.fetchall())
         second_images = p1.intersection(p2)
         db.commit()
-    return  second_images.pop()
+    if second_images:
+        return second_images.pop()[0]
+    return sorry_image
+
 
 @requires_username
 def create_game():
