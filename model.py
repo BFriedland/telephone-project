@@ -83,56 +83,56 @@ UPDATE games SET %s=%s WHERE id=%s
 # B) WIll pull all data at the current step from games that do not yet have
 #    an entry for the next step.
 DB_GET_FIRST_PROMPT_A = """
-SELECT prompts.data
+SELECT prompts.data, games.id
 FROM games
 INNER JOIN prompts
 ON games.first_prompt_id=prompts.id
 WHERE NOT username=%s
 """
 DB_GET_FIRST_PROMPT_B = """
-SELECT prompts.data
+SELECT prompts.data, games.id
 FROM games
 INNER JOIN prompts
 ON games.first_prompt_id=prompts.id
 WHERE first_image_id IS NULL
 """
 DB_GET_SECOND_PROMPT_A = """
-SELECT prompts.data
+SELECT prompts.data, games.id
 FROM games
 INNER JOIN prompts
 ON games.second_prompt_id=prompts.id
 WHERE NOT username=%s
 """
 DB_GET_SECOND_PROMPT_B = """
-SELECT prompts.data
+SELECT prompts.data, games.id
 FROM games
 INNER JOIN prompts
 ON games.second_prompt_id=prompts.id
 WHERE second_image_id IS NULL
 """
 DB_GET_FIRST_IMAGE_A = """
-SELECT images.data
+SELECT images.data, games.id
 FROM games
 INNER JOIN images
 ON games.first_image_id=images.id
 WHERE NOT username=%s
 """
 DB_GET_FIRST_IMAGE_B = """
-SELECT images.data
+SELECT images.data, games.id
 FROM games
 INNER JOIN images
 ON games.first_image_id=images.id
 WHERE second_prompt_id IS NULL
 """
 DB_GET_SECOND_IMAGE_A = """
-SELECT images.data
+SELECT images.data, games.id
 FROM games
 INNER JOIN images
 ON games.second_image_id=images.id
 WHERE NOT username=%s
 """
 DB_GET_SECOND_IMAGE_B = """
-SELECT images.data
+SELECT images.data, games.id
 FROM games
 INNER JOIN images
 ON games.second_image_id=images.id
