@@ -20,11 +20,14 @@
         {% endif %}
       </div>
     </header>
-    <section id="content">
+    <section id="content" class="cf">
       {% block body %}{% endblock %}
     </section>
     <footer class="cf">
-      <a class="left-footer" href="{{ url_for('logout') }}">Reset cookie</a>
+      <ul class="left-footer cf">
+        <li><a href="{{ url_for('logout') }}">Reset cookie</a></li>
+        <li><a href="{{ url_for('show_games') }}">Show games</a></li>
+      </ul>
       <a class="right-footer" href="{{ url_for('home') }}">Help</a>
       <p class="center-footer">Created in the Code Fellows Python Dev Accelerator by Jason, Charlie, &amp; Ben</p>
     </footer>

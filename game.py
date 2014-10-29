@@ -4,18 +4,20 @@ import os
 import psycopg2
 from contextlib import closing
 
+DB_DROP_TABLES = """
+DROP TABLE IF EXISTS games, prompts, images;
+"""
+
 PROMPT_TABLE_SCHEMA = """
-DROP TABLE IF EXISTS prompts;
 CREATE TABLE "prompts" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
-    data VARCHAR(200) NOT NULL,
+    data VARCHAR(MAX) NOT NULL,
     created TIMESTAMP NOT NULL
     )
 """
 
 IMAGE_TABLE_SCHEMA = """
-DROP TABLE IF EXISTS images;
 CREATE TABLE "images" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
@@ -26,7 +28,6 @@ CREATE TABLE "images" (
 # imgdata is datatype TEXT for now--don't know how long these strings will be
 
 GAME_TABLE_SCHEMA = """
-DROP TABLE IF EXISTS games;
 CREATE TABLE "games" (
     id serial PRIMARY KEY,
     first_prompt_id INTEGER REFERENCES prompts,
@@ -57,8 +58,8 @@ RETURNING id
 # Generic PSQL update-game-content string.
 # Can be divided into separate image
 # and prompt versions, if desired.
-DB_INSERT_CONTENT = """
-INSERT INTO %s (username, data, created) VALUES (%s, %s, %s) RETURNING id
+DB_INSERT_IMAGE = """
+INSERT INTO images (username, data, created) VALUES (%s, %s, %s) RETURNING id
 """
 # Usage:
 # tablename, (datatypenameinPSQL), (username, Flask_data_name, created)
@@ -66,6 +67,9 @@ INSERT INTO %s (username, data, created) VALUES (%s, %s, %s) RETURNING id
 # INSERT INTO images (username, imgdata, created)
 #   VALUES (session['username'], jsonified_image_data(?), datetime.now())
 
+DB_INSERT_PROMPT = """
+INSERT INTO prompts (username, data, created) VALUES (%s, %s, %s) RETURNING id
+"""
 
 # update games table to have this new id in the correct slot
 DB_UPDATE_GAMES = """
@@ -87,6 +91,8 @@ def init_db():
     """Initialize the database.
     WARNING: This will drop existsing tables"""
     with closing(connect_db()) as db:
+        db.cursor().execute(DB_DROP_TABLES)
+        db.commit()
         db.cursor().execute(PROMPT_TABLE_SCHEMA)
         db.commit()
         db.cursor().execute(IMAGE_TABLE_SCHEMA)

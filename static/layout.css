@@ -52,6 +52,11 @@ header {
   position: relative;
 }
 
+.game {
+  float: left;
+  width: 340px;
+}
+
 footer {
   box-sizing: border-box;
   padding: 2em;
@@ -60,8 +65,9 @@ footer {
 }
 
 .left-footer {
-  display: block;
   float: left;
+  width: 25%;
+  display: block;
   margin: 0;
 }
 

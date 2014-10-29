@@ -40,10 +40,20 @@ a:visited {
   color: rgb(255,133,0);
 }
 
+.prompt {
+  text-align: center;
+  color: rgb(255,133,0);
+}
+
 footer {
   text-align: center;
   background: #05abeb;
   background-color: rgb(5, 171, 235);
+}
+
+.left-footer {
+  text-align: left;
+  list-style: none;
 }
 
 .center-footer {

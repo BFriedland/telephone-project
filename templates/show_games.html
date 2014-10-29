@@ -6,6 +6,19 @@
 {% block body %}
 <h1 class="section-title">Games {{ user | safe }} contributed to</h1>
 <h2 class="instructions">SHOW THEM HERE!</h2>
+{% for game in games %}
+<div id="game{{game.id}}" class="game cf">
+  <h3 id="game{{game.id}}-prompt1" class="prompt">Placeholder text</h2>
+  <div class="canvas-box">
+    <canvas id="game{{game.id}}-image2"></canvas>
+  </div>
+  <h3 id="game{{game.id}}-prompt2"class="prompt">PLACEHOLDER TEXT</h2>
+  <div class="canvas-box">
+    <canvas id="game{{game.id}}-image2"></canvas>
+  </div>
+  <h3 id="game{{game.id}}-prompt3" class="prompt">PLACEHOLDER TEXT</h2>
+</div>
+{% endfor %}
 {% endblock %}
 {% block scripts %}
 {% endblock %}
