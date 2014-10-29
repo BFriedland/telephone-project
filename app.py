@@ -75,11 +75,19 @@ def store_data(game_column, tablename, data):
         cur = db.cursor()
         username = session['username']
         now = datetime.datetime.utcnow()
-        cur.execute(game.DB_INSERT_CONTENT, [tablename, username, data, now])
+        if tablename == 'prompts':
+            cur.execute(game.DB_INSERT_PROMPT,
+                        [username, data, now])
+        elif tablename == 'images':
+            cur.execute(game.DB_INSERT_IMAGE,
+                        [username, data, now])
         inserted_data_id = cur.fetchone()[0]
-        # cur.commit()
-        cur.execute(game.DB_UPDATE_GAMES,
-                    [game_column, inserted_data_id, session['game_id']])
+
+        # "Postgres made us do it." -- Jason
+        execute_string = game.DB_UPDATE_GAMES % (game_column,
+                                                 '%s', session['game_id'])
+        cur.execute(execute_string,
+                    [inserted_data_id])
         db.commit()
 
 
@@ -124,7 +132,7 @@ def step_two():
 @app.route('/step_three', methods=['POST'])
 @requires_username
 def step_three():
-    store_data('first_image_id', 'images', request.json)
+    store_data('first_image_id', 'images', json.dumps(request.json))
     response = {'html': render_template('step_three.html'),
                 'drawing': get_drawing()}
     return json.dumps(response)
@@ -142,7 +150,7 @@ def step_four():
 @app.route('/step_five', methods=['POST'])
 @requires_username
 def step_five():
-    store_data('second_image_id', 'images', request.json)
+    store_data('second_image_id', 'images', json.dumps(request.json))
     response = {'html': render_template('step_three.html'),
                 'drawing': get_drawing()}
     return json.dumps(response)
