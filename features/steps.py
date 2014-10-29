@@ -9,6 +9,7 @@ from game import init_db
 @lettuce.before.all
 def setup_app():
     print "This happens before all the lettuce tests begin"
+    app.config['DATABASE'] = "dbname=travis_ci_test  user=postgres"
     init_db()
     app.config['TESTING'] = True
 
