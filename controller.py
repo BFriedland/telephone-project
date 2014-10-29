@@ -10,7 +10,7 @@ import os
 from functools import wraps
 import random
 import datetime
-import game
+import model
 from contextlib import closing
 import psycopg2
 
@@ -41,13 +41,13 @@ def init_db():
     """Initialize the database.
     WARNING: This will drop existsing tables"""
     with closing(connect_db()) as db:
-        db.cursor().execute(game.DB_DROP_TABLES)
+        db.cursor().execute(model.DB_DROP_TABLES)
         db.commit()
-        db.cursor().execute(game.PROMPT_TABLE_SCHEMA)
+        db.cursor().execute(model.PROMPT_TABLE_SCHEMA)
         db.commit()
-        db.cursor().execute(game.IMAGE_TABLE_SCHEMA)
+        db.cursor().execute(model.IMAGE_TABLE_SCHEMA)
         db.commit()
-        db.cursor().execute(game.GAME_TABLE_SCHEMA)
+        db.cursor().execute(model.GAME_TABLE_SCHEMA)
         db.commit()
 
 
@@ -69,10 +69,10 @@ def get_first_prompt():
     with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
-        cur.execute(game.DB_GET_FIRST_PROMPT_A, [username])
+        cur.execute(model.DB_GET_FIRST_PROMPT_A, [username])
         #prompts from games not yet contributed to by user
         p1 = set(cur.fetchall())
-        cur.execute(game.DB_GET_FIRST_PROMPT_B)
+        cur.execute(model.DB_GET_FIRST_PROMPT_B)
         #prompts from games needing user input for next step
         p2 = set(cur.fetchall())
         first_prompts = p1.intersection(p2)
@@ -88,10 +88,10 @@ def get_second_prompt():
     with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
-        cur.execute(game.DB_GET_SECOND_PROMPT_A, [username])
+        cur.execute(model.DB_GET_SECOND_PROMPT_A, [username])
         #prompts from games not yet contributed to by user
         p1 = set(cur.fetchall())
-        cur.execute(game.DB_GET_SECOND_PROMPT_B)
+        cur.execute(model.DB_GET_SECOND_PROMPT_B)
         #prompts from games needing user input for next step
         p2 = set(cur.fetchall())
         second_prompts = p1.intersection(p2)
@@ -107,10 +107,10 @@ def get_first_image():
     with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
-        cur.execute(game.DB_GET_FIRST_IMAGE_A, [username])
+        cur.execute(model.DB_GET_FIRST_IMAGE_A, [username])
         #prompts from games not yet contributed to by user
         p1 = set(cur.fetchall())
-        cur.execute(game.DB_GET_FIRST_IMAGE_B)
+        cur.execute(model.DB_GET_FIRST_IMAGE_B)
         #prompts from games needing user input for next step
         p2 = set(cur.fetchall())
         first_images = p1.intersection(p2)
@@ -126,10 +126,10 @@ def get_second_image():
     with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
-        cur.execute(game.DB_GET_SECOND_IMAGE_A, [username])
+        cur.execute(model.DB_GET_SECOND_IMAGE_A, [username])
         #prompts from games not yet contributed to by user
         p1 = set(cur.fetchall())
-        cur.execute(game.DB_GET_SECOND_IMAGE_B)
+        cur.execute(model.DB_GET_SECOND_IMAGE_B)
         #prompts from games needing user input for next step
         p2 = set(cur.fetchall())
         second_images = p1.intersection(p2)
@@ -144,7 +144,7 @@ def create_game():
     # execute a DB_CREATE_GAME script, RETURNING id for the game
     with closing(connect_db()) as db:
         cur = db.cursor()
-        cur.execute(game.DB_CREATE_GAME)
+        cur.execute(model.DB_CREATE_GAME)
         game_id = cur.fetchone()[0]
         db.commit()
         return game_id
@@ -167,15 +167,15 @@ def store_data(game_column, tablename, data):
         username = session['username']
         now = datetime.datetime.utcnow()
         if tablename == 'prompts':
-            cur.execute(game.DB_INSERT_PROMPT,
+            cur.execute(model.DB_INSERT_PROMPT,
                         [username, data, now])
         elif tablename == 'images':
-            cur.execute(game.DB_INSERT_IMAGE,
+            cur.execute(model.DB_INSERT_IMAGE,
                         [username, data, now])
         inserted_data_id = cur.fetchone()[0]
 
         # "Postgres made us do it." -- Jason
-        execute_string = game.DB_UPDATE_GAMES % (game_column,
+        execute_string = model.DB_UPDATE_GAMES % (game_column,
                                                  '%s', session['game_id'])
         cur.execute(execute_string,
                     [inserted_data_id])
@@ -192,7 +192,7 @@ def store_first_prompt(prompt):
         tablename = 'prompts'
         username = session['username']
         now = datetime.datetime.utcnow()
-        cur.execute(game.DB_INSERT_CONTENT, [tablename, username, prompt, now])
+        cur.execute(model.DB_INSERT_CONTENT, [tablename, username, prompt, now])
         db.commit()
 
 
