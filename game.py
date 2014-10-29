@@ -12,7 +12,7 @@ PROMPT_TABLE_SCHEMA = """
 CREATE TABLE "prompts" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
-    data VARCHAR(MAX) NOT NULL,
+    data VARCHAR(500) NOT NULL,
     created TIMESTAMP NOT NULL
     )
 """
@@ -76,26 +76,3 @@ DB_UPDATE_GAMES = """
 UPDATE games SET %s=%s WHERE id=%s
 """
 # UPDATE games SET game_column=inserted_data_id WHERE id=session['game_id']
-
-
-def connect_db(app=Flask(__name__)):
-    """Return a connection to the configured database"""
-    if 'DATABASE' not in app.config:
-        app.config['DATABASE'] = os.environ.get(
-            'DATABASE_URL', 'dbname=telephone_db user=store')
-
-    return psycopg2.connect(app.config['DATABASE'])
-
-
-def init_db():
-    """Initialize the database.
-    WARNING: This will drop existsing tables"""
-    with closing(connect_db()) as db:
-        db.cursor().execute(DB_DROP_TABLES)
-        db.commit()
-        db.cursor().execute(PROMPT_TABLE_SCHEMA)
-        db.commit()
-        db.cursor().execute(IMAGE_TABLE_SCHEMA)
-        db.commit()
-        db.cursor().execute(GAME_TABLE_SCHEMA)
-        db.commit()

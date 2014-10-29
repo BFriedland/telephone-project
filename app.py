@@ -12,6 +12,7 @@ import random
 import datetime
 import game
 from contextlib import closing
+import psycopg2
 
 
 app = Flask(__name__)
@@ -23,6 +24,29 @@ app.config['SECRET_KEY'] = os.environ.get(
 app.config['DATABASE'] = os.environ.get(
     'DATABASE_URL', 'dbname=telephone_db user=store'
 )
+
+
+def connect_db():
+    """Return a connection to the configured database"""
+    if 'DATABASE' not in app.config:
+        app.config['DATABASE'] = os.environ.get(
+            'DATABASE_URL', 'dbname=telephone_db user=store')
+
+    return psycopg2.connect(app.config['DATABASE'])
+
+
+def init_db():
+    """Initialize the database.
+    WARNING: This will drop existsing tables"""
+    with closing(connect_db()) as db:
+        db.cursor().execute(game.DB_DROP_TABLES)
+        db.commit()
+        db.cursor().execute(game.PROMPT_TABLE_SCHEMA)
+        db.commit()
+        db.cursor().execute(game.IMAGE_TABLE_SCHEMA)
+        db.commit()
+        db.cursor().execute(game.GAME_TABLE_SCHEMA)
+        db.commit()
 
 
 def requires_username(view):
@@ -56,7 +80,7 @@ def get_prompt():
 @requires_username
 def create_game():
     # execute a DB_CREATE_GAME script, RETURNING id for the game
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         cur.execute(game.DB_CREATE_GAME)
         game_id = cur.fetchone()[0]
@@ -76,7 +100,7 @@ def store_data(game_column, tablename, data):
     if game_column == 'first_prompt_id':
         session['game_id'] = create_game()
 
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
         now = datetime.datetime.utcnow()
@@ -101,7 +125,7 @@ def store_first_prompt(prompt):
     if not prompt:
         raise ValueError('Prompt data not supplied to store_first_prompt')
 
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         tablename = 'prompts'
         username = session['username']
