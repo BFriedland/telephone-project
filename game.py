@@ -4,8 +4,11 @@ import os
 import psycopg2
 from contextlib import closing
 
+DB_DROP_TABLES = """
+DROP TABLE IF EXISTS games, prompts, images;
+"""
+
 PROMPT_TABLE_SCHEMA = """
-DROP TABLE IF EXISTS prompts;
 CREATE TABLE "prompts" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
@@ -15,7 +18,6 @@ CREATE TABLE "prompts" (
 """
 
 IMAGE_TABLE_SCHEMA = """
-DROP TABLE IF EXISTS images;
 CREATE TABLE "images" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
@@ -26,7 +28,6 @@ CREATE TABLE "images" (
 # imgdata is datatype TEXT for now--don't know how long these strings will be
 
 GAME_TABLE_SCHEMA = """
-DROP TABLE IF EXISTS games;
 CREATE TABLE "games" (
     id serial PRIMARY KEY,
     first_prompt_id INTEGER REFERENCES prompts,
@@ -87,6 +88,8 @@ def init_db():
     """Initialize the database.
     WARNING: This will drop existsing tables"""
     with closing(connect_db()) as db:
+        db.cursor().execute(DB_DROP_TABLES)
+        db.commit()
         db.cursor().execute(PROMPT_TABLE_SCHEMA)
         db.commit()
         db.cursor().execute(IMAGE_TABLE_SCHEMA)
