@@ -1,11 +1,11 @@
 import lettuce
 
 from flask import url_for
-from app import app
+from controller import app
 import json
 from contextlib import closing
 import psycopg2
-from game import DB_DROP_TABLES, PROMPT_TABLE_SCHEMA, IMAGE_TABLE_SCHEMA,\
+from model import DB_DROP_TABLES, PROMPT_TABLE_SCHEMA, IMAGE_TABLE_SCHEMA,\
     GAME_TABLE_SCHEMA
 
 
