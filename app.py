@@ -12,6 +12,7 @@ import random
 import datetime
 import game
 from contextlib import closing
+import psycopg2
 
 
 app = Flask(__name__)
@@ -23,6 +24,29 @@ app.config['SECRET_KEY'] = os.environ.get(
 app.config['DATABASE'] = os.environ.get(
     'DATABASE_URL', 'dbname=telephone_db user=store'
 )
+
+
+def connect_db():
+    """Return a connection to the configured database"""
+    if 'DATABASE' not in app.config:
+        app.config['DATABASE'] = os.environ.get(
+            'DATABASE_URL', 'dbname=telephone_db user=store')
+
+    return psycopg2.connect(app.config['DATABASE'])
+
+
+def init_db():
+    """Initialize the database.
+    WARNING: This will drop existsing tables"""
+    with closing(connect_db()) as db:
+        db.cursor().execute(game.DB_DROP_TABLES)
+        db.commit()
+        db.cursor().execute(game.PROMPT_TABLE_SCHEMA)
+        db.commit()
+        db.cursor().execute(game.IMAGE_TABLE_SCHEMA)
+        db.commit()
+        db.cursor().execute(game.GAME_TABLE_SCHEMA)
+        db.commit()
 
 
 def requires_username(view):
@@ -44,19 +68,79 @@ def store_drawing(drawing_data):
 
 
 @requires_username
-def get_drawing():
-    return json.dumps({u'objects': [{u'opacity': 1, u'strokeMiterLimit': 10, u'height': 196, u'visible': True, u'stroke': u'rgb(0, 0, 0)', u'fill': None, u'angle': 0, u'flipX': False, u'flipY': False, u'top': 164.25, u'scaleX': 1, u'scaleY': 1, u'strokeLineJoin': u'round', u'width': 145, u'backgroundColor': u'', u'clipTo': None, u'type': u'path', u'strokeLineCap': u'round', u'strokeDashArray': None, u'strokeWidth': 30, u'originY': u'center', u'originX': u'center', u'path': [[u'M', 0, 0], [u'Q', 0, 0, 0.5, 0], [u'Q', 1, 0, 2.75, 0], [u'Q', 4.5, 0, 10.5, 0], [u'Q', 16.5, 0, 27.5, 0], [u'Q', 38.5, 0, 47.5, 0], [u'Q', 56.5, 0, 63.5, 0], [u'Q', 70.5, 0, 74, 0], [u'Q', 77.5, 0, 80, 0], [u'Q', 82.5, 0, 84.5, 1], [u'Q', 86.5, 2, 86.5, 24], [u'Q', 86.5, 46, 83, 74.5], [u'Q', 79.5, 103, 78, 113], [u'Q', 76.5, 123, 74, 131], [u'Q', 71.5, 139, 70.5, 146.5], [u'Q', 69.5, 154, 69.5, 155], [u'Q', 69.5, 156, 71, 153.5], [u'Q', 72.5, 151, 81.5, 141], [u'Q', 90.5, 131, 98, 124], [u'Q', 105.5, 117, 109.5, 114], [u'Q', 113.5, 111, 120.5, 106.5], [u'Q', 127.5, 102, 130, 105], [u'Q', 132.5, 108, 132.5, 127.5], [u'Q', 132.5, 147, 132.5, 157], [u'Q', 132.5, 167, 132, 174.5], [u'Q', 131.5, 182, 131, 187], [u'Q', 130.5, 192, 130.5, 194.5], [u'Q', 130.5, 197, 132.5, 196.5], [u'Q', 134.5, 196, 137, 194], [u'Q', 139.5, 192, 141.5, 189.5], [u'Q', 143.5, 187, 144.5, 185.5], [u'L', 145.5, 184]], u'shadow': None, u'pathOffset': {u'y': 0, u'x': 0}, u'left': 177.25}], u'background': u''}).encode('utf-8')
+def get_drawing(step_to_complete):
+    pass
 
 
 @requires_username
-def get_prompt():
-    return 'A sample prompt is not very fun to draw.'
+def get_first_prompt():
+    #Retrieves a first prompt from a game that the user has not contributed to.
+    with closing(game.connect_db()) as db:
+        cur = db.cursor()
+        username = session['username']
+        cur.execute(game.DB_GET_FIRST_PROMPT_A, [username])
+        #prompts from games not yet contributed to by user
+        p1 = set(cur.fetchall())
+        cur.execute(game.DB_GET_FIRST_PROMPT_B)
+        #prompts from games needing user input for next step
+        p2 = set(cur.fetchall())
+        first_prompts = p1.intersection(p2)
+        db.commit()
+    return  first_prompts.pop()
 
+
+@requires_username
+def get_second_prompt():
+    #Retrieves a first prompt from a game that the user has not contributed to.
+    with closing(game.connect_db()) as db:
+        cur = db.cursor()
+        username = session['username']
+        cur.execute(game.DB_GET_SECOND_PROMPT_A, [username])
+        #prompts from games not yet contributed to by user
+        p1 = set(cur.fetchall())
+        cur.execute(game.DB_GET_SECOND_PROMPT_B)
+        #prompts from games needing user input for next step
+        p2 = set(cur.fetchall())
+        second_prompts = p1.intersection(p2)
+        db.commit()
+    return  second_prompts.pop()
+
+@requires_username
+def get_first_image():
+    #Retrieves a first prompt from a game that the user has not contributed to.
+    with closing(game.connect_db()) as db:
+        cur = db.cursor()
+        username = session['username']
+        cur.execute(game.DB_GET_FIRST_IMAGE_A, [username])
+        #prompts from games not yet contributed to by user
+        p1 = set(cur.fetchall())
+        cur.execute(game.DB_GET_FIRST_IMAGE_B)
+        #prompts from games needing user input for next step
+        p2 = set(cur.fetchall())
+        first_images = p1.intersection(p2)
+        db.commit()
+    return  first_images.pop()
+
+@requires_username
+def get_second_image():
+    #Retrieves a first prompt from a game that the user has not contributed to.
+    with closing(game.connect_db()) as db:
+        cur = db.cursor()
+        username = session['username']
+        cur.execute(game.DB_GET_SECOND_IMAGE_A, [username])
+        #prompts from games not yet contributed to by user
+        p1 = set(cur.fetchall())
+        cur.execute(game.DB_GET_SECOND_IMAGE_B)
+        #prompts from games needing user input for next step
+        p2 = set(cur.fetchall())
+        second_images = p1.intersection(p2)
+        db.commit()
+    return  second_images.pop()
 
 @requires_username
 def create_game():
     # execute a DB_CREATE_GAME script, RETURNING id for the game
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         cur.execute(game.DB_CREATE_GAME)
         game_id = cur.fetchone()[0]
@@ -76,7 +160,7 @@ def store_data(game_column, tablename, data):
     if game_column == 'first_prompt_id':
         session['game_id'] = create_game()
 
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
         now = datetime.datetime.utcnow()
@@ -101,7 +185,7 @@ def store_first_prompt(prompt):
     if not prompt:
         raise ValueError('Prompt data not supplied to store_first_prompt')
 
-    with closing(game.connect_db()) as db:
+    with closing(connect_db()) as db:
         cur = db.cursor()
         tablename = 'prompts'
         username = session['username']
@@ -138,7 +222,7 @@ def step_one():
 def step_two():
     store_data('first_prompt_id', 'prompts', request.form['prompt'])
     response = {'html': render_template('step_two.html'),
-                'prompt': get_prompt()}
+                'prompt': get_first_prompt()}
     return json.dumps(response)
 
 
@@ -147,7 +231,7 @@ def step_two():
 def step_three():
     store_data('first_image_id', 'images', json.dumps(request.json))
     response = {'html': render_template('step_three.html'),
-                'drawing': get_drawing()}
+                'drawing': get_first_image()}
     return json.dumps(response)
 
 
@@ -156,7 +240,7 @@ def step_three():
 def step_four():
     store_data('second_prompt_id', 'prompts', request.form['prompt'])
     response = {'html': render_template('step_two.html'),
-                'prompt': get_prompt()}
+                'prompt': get_second_prompt()}
     return json.dumps(response)
 
 
@@ -165,7 +249,7 @@ def step_four():
 def step_five():
     store_data('second_image_id', 'images', json.dumps(request.json))
     response = {'html': render_template('step_three.html'),
-                'drawing': get_drawing()}
+                'drawing': get_second_image()}
     return json.dumps(response)
 
 
