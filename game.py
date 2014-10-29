@@ -5,9 +5,7 @@ import psycopg2
 from contextlib import closing
 
 DB_DROP_TABLES = """
-DROP TABLE IF EXISTS prompts;
-DROP TABLE IF EXISTS images;
-DROP TABLE IF EXISTS games;
+DROP TABLE IF EXISTS games, prompts, images;
 """
 
 PROMPT_TABLE_SCHEMA = """
