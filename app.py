@@ -96,6 +96,9 @@ def store_first_prompt(prompt):
         db.commit()
 
 
+def get_games():
+    return [{'id': 1}, {'id': 2}]
+
 @app.route('/')
 def home():
     return render_template('step_one.html')
@@ -158,7 +161,10 @@ def final_step():
 @app.route('/show_games')
 @requires_username
 def show_games():
-    return render_template('show_games.html', user=session['username'])
+    games = get_games();
+    return render_template('show_games.html',
+                           user=session['username'],
+                           games=games)
 
 
 @app.route('/login', methods=['GET', 'POST'])
