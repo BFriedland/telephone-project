@@ -3,7 +3,29 @@ import lettuce
 from flask import url_for
 from app import app
 import json
-from game import init_db
+from contextlib import closing
+import psycopg2
+from game import DB_DROP_TABLES, PROMPT_TABLE_SCHEMA, IMAGE_TABLE_SCHEMA,\
+    GAME_TABLE_SCHEMA
+
+
+def init_db():
+    """Initialize the database.
+    WARNING: This will drop existsing tables"""
+    with closing(psycopg2.connect(app.config['DATABASE'])) as db:
+        db.cursor().execute(PROMPT_TABLE_SCHEMA)
+        db.commit()
+        db.cursor().execute(IMAGE_TABLE_SCHEMA)
+        db.commit()
+        db.cursor().execute(GAME_TABLE_SCHEMA)
+        db.commit()
+
+
+def clear_db():
+    """Clear the database"""
+    with closing(psycopg2.connect(app.config['DATABASE'])) as db:
+        db.cursor().execute(DB_DROP_TABLES)
+        db.commit()
 
 
 @lettuce.before.all
@@ -17,6 +39,7 @@ def setup_app():
 @lettuce.after.all
 def teardown_app(total):
     print "This happens after all the lettuce tests have run"
+    clear_db()
 
 
 @lettuce.step('a new user')
