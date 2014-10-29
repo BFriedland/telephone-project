@@ -1,17 +1,12 @@
-{% extends "base.html" %}
-{% block stylesheets %}
-<link rel="stylesheet" type="text/css" href="/static/drawing.css">
-{% endblock %}
-{% block body %}
 <h1 class="section-title">Draw a picture</h1>
-<h2 class="drawing-prompt">{{ prompt | safe }}</h2>
+<h2 class="drawing-prompt">PLACEHOLDER TEXT</h2>
 <div class="canvas-box">
   <canvas id="drawing"></canvas>
 </div>
 <div class="control-box cf">
-  <ul class="button-box">
-    <li id="clear" class="button">Clear</li>
-    <li id="upload" class="button">Upload</li>
+  <ul class="button-box cf">
+    <li id="clear" class="d-button">Clear</li>
+    <li id="upload" class="d-button">Upload</li>
   </ul>
   <ul class="size-selectors cf">
     <li class="sizer"><div class="selector huge selected"><div></li>
@@ -38,9 +33,3 @@
     <li class="selector teal"></li>
   </ul>
 </div>
-{% endblock %}
-{% block scripts %}
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script type="text/javascript" src="/static/drawing.js"></script>
-{% endblock %}

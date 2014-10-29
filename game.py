@@ -6,20 +6,20 @@ from contextlib import closing
 
 PROMPT_TABLE_SCHEMA = """
 DROP TABLE IF EXISTS prompts;
-CREATE TABLE prompts(
+CREATE TABLE "prompts" (
     id serial PRIMARY KEY,
-    userid INTEGER NOT NULL,
-    text VARCHAR(200) NOT NULL,
+    username TEXT NOT NULL,
+    data VARCHAR(200) NOT NULL,
     created TIMESTAMP NOT NULL
     )
 """
 
 IMAGE_TABLE_SCHEMA = """
 DROP TABLE IF EXISTS images;
-CREATE TABLE images(
+CREATE TABLE "images" (
     id serial PRIMARY KEY,
-    userid INTEGER NOT NULL,
-    imgdata TEXT NOT NULL,
+    username TEXT NOT NULL,
+    data TEXT NOT NULL,
     created TIMESTAMP NOT NULL
     )
 """
@@ -27,19 +27,59 @@ CREATE TABLE images(
 
 GAME_TABLE_SCHEMA = """
 DROP TABLE IF EXISTS games;
-CREATE TABLE games(
+CREATE TABLE "games" (
     id serial PRIMARY KEY,
-    first_prompt_id INTEGER NOT NULL,
-    second_prompt_id INTEGER NOT NULL,
-    thrid_prompt_id INTEGER NOT NULL,
-    first_image_id INTEGER NOT NULL,
-    second_image_id INTEGER NOT NULL
+    first_prompt_id INTEGER REFERENCES prompts,
+    first_image_id INTEGER REFERENCES images,
+    second_prompt_id INTEGER REFERENCES prompts,
+    second_image_id INTEGER REFERENCES images,
+    third_prompt_id INTEGER REFERENCES prompts
     )
 """
+
+DB_CREATE_GAME = """
+INSERT INTO games (
+    first_prompt_id,
+    first_image_id,
+    second_prompt_id,
+    second_image_id,
+    third_prompt_id)
+VALUES (
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL)
+RETURNING id
+"""
+
+
+# Generic PSQL update-game-content string.
+# Can be divided into separate image
+# and prompt versions, if desired.
+DB_INSERT_CONTENT = """
+INSERT INTO %s (username, data, created) VALUES (%s, %s, %s) RETURNING id
+"""
+# Usage:
+# tablename, (datatypenameinPSQL), (username, Flask_data_name, created)
+# Example:
+# INSERT INTO images (username, imgdata, created)
+#   VALUES (session['username'], jsonified_image_data(?), datetime.now())
+
+
+# update games table to have this new id in the correct slot
+DB_UPDATE_GAMES = """
+UPDATE games SET %s=%s WHERE id=%s
+"""
+# UPDATE games SET game_column=inserted_data_id WHERE id=session['game_id']
 
 
 def connect_db(app=Flask(__name__)):
     """Return a connection to the configured database"""
+    if 'DATABASE' not in app.config:
+        app.config['DATABASE'] = os.environ.get(
+            'DATABASE_URL', 'dbname=telephone_db user=store')
+
     return psycopg2.connect(app.config['DATABASE'])
 
 
