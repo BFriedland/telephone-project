@@ -12,7 +12,7 @@ PROMPT_TABLE_SCHEMA = """
 CREATE TABLE "prompts" (
     id serial PRIMARY KEY,
     username TEXT NOT NULL,
-    data VARCHAR(200) NOT NULL,
+    data VARCHAR(MAX) NOT NULL,
     created TIMESTAMP NOT NULL
     )
 """
@@ -58,8 +58,8 @@ RETURNING id
 # Generic PSQL update-game-content string.
 # Can be divided into separate image
 # and prompt versions, if desired.
-DB_INSERT_CONTENT = """
-INSERT INTO %s (username, data, created) VALUES (%s, %s, %s) RETURNING id
+DB_INSERT_IMAGE = """
+INSERT INTO images (username, data, created) VALUES (%s, %s, %s) RETURNING id
 """
 # Usage:
 # tablename, (datatypenameinPSQL), (username, Flask_data_name, created)
@@ -67,6 +67,9 @@ INSERT INTO %s (username, data, created) VALUES (%s, %s, %s) RETURNING id
 # INSERT INTO images (username, imgdata, created)
 #   VALUES (session['username'], jsonified_image_data(?), datetime.now())
 
+DB_INSERT_PROMPT = """
+INSERT INTO prompts (username, data, created) VALUES (%s, %s, %s) RETURNING id
+"""
 
 # update games table to have this new id in the correct slot
 DB_UPDATE_GAMES = """
