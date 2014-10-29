@@ -7,10 +7,9 @@ Feature: User flow
         Then I see the first page
         And I can submit a new prompt
 
-    # Scenario: Logged in user can see add entry form
-    #     Given an authenticated user
-    #     When I view the home page
-    #     Then I do see the new entry form
+    Scenario: Submitting a new prompt on first page
+        When I submit a new prompt
+        Then I see the second page
 
     # Scenario: Anonymous user cannot submit add form
     #     Given an anonymous user

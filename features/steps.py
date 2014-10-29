@@ -2,6 +2,7 @@ import lettuce
 
 from flask import url_for
 from app import app
+import json
 
 
 @lettuce.before.all
@@ -39,11 +40,25 @@ def see_step_one(step):
 
 
 @lettuce.step('I can submit a new prompt')
-def can_post_data(step):
-    response = lettuce.world.client.post('/new-prompt',
+def can_post_prompt(step):
+    response = lettuce.world.client.post('/step_two',
                                          data={'prompt': 'New thing'})
     assert response.status_code == 200, response.status_code
 
+
+@lettuce.step('I submit a new prompt')
+def posts_prompt(step):
+    lettuce.world.response = \
+        lettuce.world.client.post('/step_two', data={'prompt': 'New thing'})
+
+
+@lettuce.step('I see the second page')
+def see_step_two(step):
+    body = json.loads(lettuce.world.response.data)['html']
+    msg1 = "found prompt-entry form in %s"
+    msg2 = "did not find drawing canvas form in %s"
+    assert 'id="prompt-entry"' not in body, msg1 % body
+    assert 'canvas id="drawing"' in body, msg2 % body
 
 
 # @lettuce.step('the title "([^"]*)"')
