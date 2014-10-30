@@ -184,7 +184,7 @@ def store_data(game_column, tablename, data):
 
         # "Postgres made us do it." -- Jason
         execute_string = model.DB_UPDATE_GAMES % (game_column,
-                                                 '%s', session['game_id'])
+                                                  '%s', session['game_id'])
         cur.execute(execute_string,
                     [inserted_data_id])
         db.commit()
@@ -208,7 +208,12 @@ def store_first_prompt(prompt):
 def get_games():
     """Return a list of dictionaries containing gameids for games that
     the current user has contributed to"""
-    return [{'id': 1}, {'id': 2}]
+    return [{'id': 1,
+             'prompt1': "Sample prompt 1",
+             'image1': sorry_image,
+             'prompt2': "Sample prompt 2",
+             'image2': sorry_image,
+             'prompt3': "Sample prompt 3"}]
 
 
 @app.route('/')
