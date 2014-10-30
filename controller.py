@@ -33,7 +33,6 @@ def connect_db():
     if 'DATABASE' not in app.config:
         app.config['DATABASE'] = os.environ.get(
             'DATABASE_URL', 'dbname=telephone_db user=store')
-
     return psycopg2.connect(app.config['DATABASE'])
 
 
@@ -69,7 +68,8 @@ def get_first_prompt():
     #Retrieves a first prompt from a game that the user has not contributed to.
     with closing(connect_db()) as db:
         cur = db.cursor()
-        username = session['username']
+        username = username['session']
+        #username = session['username']
         cur.execute(model.DB_GET_FIRST_PROMPT_A, [username])
         #prompts from games not yet contributed to by user
         p1 = set(cur.fetchall())
@@ -216,7 +216,8 @@ def get_games():
     GET_DATA_IDS = "SELECT * FROM games WHERE id=%s"
     with closing(connect_db()) as db:
         cur = db.cursor()
-        username = session['username']
+        #username = session['username']
+        username = 'Charlie'
         cur.execute(GET_PROMPTS, [username])
         prompt_ids = cur.fetchall()
         cur.execute(GET_IMAGES, [username])
@@ -256,9 +257,18 @@ def get_games():
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[5]])
             third_prompt = cur.fetchall()
             values = [i_d, first_prompt, first_image, second_prompt, second_image, third_prompt]
-            values = [value[0] for value in values if len(value) > 0) else None]
-            return dict(zip(keys, values))
+            for i in range(1, 6):
+                if len(values[i]) == 0:
+                    values[i] = None
+                elif len(values[i]) == 1:
+                    values[i] = values[i][0][0]
+            result = dict(zip(keys, values))
+            if result['first_image'] is None:
+                result['first_image'] = sorry_image
+            if result['second_image'] is None:
+                result['second_image'] = sorry_image
 
+            return result
         db.commit()
         games = [build_dict(game) for game in game_data_ids]
         return games
