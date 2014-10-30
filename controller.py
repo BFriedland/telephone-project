@@ -239,7 +239,7 @@ def get_games():
             db.commit()
         game_data_ids = [gdi[0] for gdi in game_data_ids]
         for x in range(6):
-            if game_data_ids[x] == None:
+            if game_data_ids[x] is None:
                 game_data_ids[x] = 0
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
