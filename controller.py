@@ -68,7 +68,7 @@ def get_first_prompt():
     #Retrieves a first prompt from a game that the user has not contributed to.
     with closing(connect_db()) as db:
         cur = db.cursor()
-        username = username['session']
+        username = session['username']
         #username = session['username']
         cur.execute(model.DB_GET_FIRST_PROMPT_A, [username])
         #prompts from games not yet contributed to by user
@@ -216,8 +216,7 @@ def get_games():
     GET_DATA_IDS = "SELECT * FROM games WHERE id=%s"
     with closing(connect_db()) as db:
         cur = db.cursor()
-        #username = session['username']
-        username = 'Charlie'
+        username = session['username']
         cur.execute(GET_PROMPTS, [username])
         prompt_ids = cur.fetchall()
         cur.execute(GET_IMAGES, [username])
