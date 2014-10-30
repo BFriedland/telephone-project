@@ -33,7 +33,6 @@ def connect_db():
     if 'DATABASE' not in app.config:
         app.config['DATABASE'] = os.environ.get(
             'DATABASE_URL', 'dbname=telephone_db user=store')
-
     return psycopg2.connect(app.config['DATABASE'])
 
 
@@ -70,6 +69,7 @@ def get_first_prompt():
     with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
+        #username = session['username']
         cur.execute(model.DB_GET_FIRST_PROMPT_A, [username])
         #prompts from games not yet contributed to by user
         p1 = set(cur.fetchall())
@@ -284,12 +284,10 @@ def get_games():
             game_data_ids.append(cur.fetchall())
             db.commit()
         game_data_ids = [gdi[0] for gdi in game_data_ids]
-        for x in range(6):
-            if game_data_ids[x] is None:
-                game_data_ids[x] = 0
+        print game_data_ids
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
-            keys = ['id', 'fist_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
+            keys = ['id', 'first_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
             i_d = game[0]
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[1]])
             first_prompt = cur.fetchall()
@@ -302,9 +300,18 @@ def get_games():
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[5]])
             third_prompt = cur.fetchall()
             values = [i_d, first_prompt, first_image, second_prompt, second_image, third_prompt]
-            values = [value[0] for value in values if len(value) > 0) else None]
-            return dict(zip(keys, values))
+            for i in range(1, 6):
+                if len(values[i]) == 0:
+                    values[i] = None
+                elif len(values[i]) == 1:
+                    values[i] = values[i][0][0]
+            result = dict(zip(keys, values))
+            if result['first_image'] is None:
+                result['first_image'] = sorry_image
+            if result['second_image'] is None:
+                result['second_image'] = sorry_image
 
+            return result
         db.commit()
         games = [build_dict(game) for game in game_data_ids]
         return games
