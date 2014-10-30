@@ -185,7 +185,7 @@ def store_data(game_column, tablename, data):
 
         # "Postgres made us do it." -- Jason
         execute_string = model.DB_UPDATE_GAMES % (game_column,
-                                                  '%s', session['game_id'])
+                                                 '%s', session['game_id'])
         cur.execute(execute_string,
                     [inserted_data_id])
         db.commit()
@@ -216,7 +216,7 @@ def get_games():
     GET_DATA_IDS = "SELECT * FROM games WHERE id=%s"
     with closing(connect_db()) as db:
         cur = db.cursor()
-        username = 'Charlie'
+        username = session['username']
         cur.execute(GET_PROMPTS, [username])
         prompt_ids = cur.fetchall()
         cur.execute(GET_IMAGES, [username])
@@ -239,22 +239,22 @@ def get_games():
             db.commit()
         game_data_ids = [gdi[0] for gdi in game_data_ids]
         for x in range(6):
-            if game_data_ids[x] == None:
+            if game_data_ids[x] is None:
                 game_data_ids[x] = 0
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
             keys = ['id', 'fist_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
             i_d = game[0]
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[1]])
-            first_prompt = cur.fetchall()
+            first_prompt = cur.fetchall()[0]
             cur.execute("SELECT data FROM images WHERE id=%s", [game[2]])
-            first_image = cur.fetchall()
+            first_image = cur.fetchall()[0]
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[3]])
-            second_prompt = cur.fetchall()
+            second_prompt = cur.fetchall()[0]
             cur.execute("SELECT data FROM images WHERE id=%s", [game[4]])
-            second_image = cur.fetchall()
+            second_image = cur.fetchall()[0]
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[5]])
-            third_prompt = cur.fetchall()
+            third_prompt = cur.fetchall()[0]
             values = [i_d, first_prompt, first_image, second_prompt, second_image, third_prompt]
 
             return dict(zip(keys, values))
