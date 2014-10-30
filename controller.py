@@ -246,17 +246,17 @@ def get_games():
             keys = ['id', 'fist_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
             i_d = game[0]
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[1]])
-            first_prompt = cur.fetchall()[0]
+            first_prompt = cur.fetchall()
             cur.execute("SELECT data FROM images WHERE id=%s", [game[2]])
-            first_image = cur.fetchall()[0]
+            first_image = cur.fetchall()
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[3]])
-            second_prompt = cur.fetchall()[0]
+            second_prompt = cur.fetchall()
             cur.execute("SELECT data FROM images WHERE id=%s", [game[4]])
-            second_image = cur.fetchall()[0]
+            second_image = cur.fetchall()
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[5]])
-            third_prompt = cur.fetchall()[0]
+            third_prompt = cur.fetchall()
             values = [i_d, first_prompt, first_image, second_prompt, second_image, third_prompt]
-
+            values = [value[0] for value in values if len(value) > 0) else None]
             return dict(zip(keys, values))
 
         db.commit()
