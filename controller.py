@@ -238,12 +238,10 @@ def get_games():
             game_data_ids.append(cur.fetchall())
             db.commit()
         game_data_ids = [gdi[0] for gdi in game_data_ids]
-        for x in range(6):
-            if game_data_ids[x] is None:
-                game_data_ids[x] = 0
+        print game_data_ids
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
-            keys = ['id', 'fist_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
+            keys = ['id', 'first_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
             i_d = game[0]
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[1]])
             first_prompt = cur.fetchall()
