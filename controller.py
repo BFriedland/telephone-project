@@ -99,8 +99,8 @@ def get_first_prompt():
             p2 = set(cur.fetchall())
             first_prompts = p1.intersection(p2)
             db.commit()
-        result = first_prompts.pop()
-        session['game_id'] = result[1]
+            result = first_prompts.pop()
+            session['game_id'] = result[1]
     # This is the culmination of both sides of the conditional:
     return result[0]
 
@@ -199,21 +199,20 @@ def create_game_on_step_two():
         list_of_default_prompts = ['A red shield decorated with two arrows and a slash.',
                                    'A smurf and a carebear walk into a bar...',
                                    'Dark Side Story']
-
-        # Random is end-inclusive
-        # (meaning random.randint(0, 10) can return values including 0 and 10)
-        # So, max is (length of the list - 1),
-        # since we need an index and we're starting and zero.
-        max_randint_index = (len(list_of_default_prompts) - 1)
-        import random
-        random_index = random.randint(0, max_randint_index)
+        random_prompt = random.sample(list_of_default_prompts, 1)[0]
+        # NOTE: default_username is only used in functions like this,
+        # where default prompts are to be provided.
+        # This parameterization allows us to call store_data() this way
+        # for any step where a user needs a default prompt supplied.
         store_data('first_prompt_id',
                    'prompts',
-                   list_of_default_prompts[random_prompt_index])
+                   random_prompt,
+                   default_username="A figment of your imagination")
+
 
 
 @requires_username
-def store_data(game_column, tablename, data):
+def store_data(game_column, tablename, data, default_username=None):
     ''' Accepts a PSQL content table name and data to store in that table,
     inserts the data, and conducts a join on the games table. '''
     if not data:
@@ -226,7 +225,14 @@ def store_data(game_column, tablename, data):
 
     with closing(connect_db()) as db:
         cur = db.cursor()
-        username = session['username']
+
+        if default_username is not None:
+            # The newly-created first prompt MAY NOT BE created
+            # by the same user who is going to reply to it
+            username = str(default_username)
+        else:
+            username = session['username']
+
         now = datetime.datetime.utcnow()
         if tablename == 'prompts':
             cur.execute(model.DB_INSERT_PROMPT,
