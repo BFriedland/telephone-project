@@ -7,18 +7,19 @@
 {% endblock %}
 {% block body %}
 <h1 class="section-title">Games {{ user | safe }} contributed to</h1>
-<h2 class="instructions">SHOW THEM HERE!</h2>
+<h2 class="instructions"><a href="/">Play Again</a></h2>
 {% for game in games %}
 <div id="game{{game.id}}" class="game cf">
-  <h3 id="game{{game.id}}-prompt1" class="prompt">{{game.first_prompt | safe}}</h2>
+  <h2 class="instructions">GAME {{game.id}}</h2>
+  <h3 id="game{{game.id}}-prompt1" class="prompt">{{game.first_prompt | safe}}</h3>
   <div class="canvas-box">
     <canvas id="game{{game.id}}-image1"></canvas>
   </div>
-  <h3 id="game{{game.id}}-prompt2"class="prompt">{{game.second_prompt | safe}}</h2>
+  <h3 id="game{{game.id}}-prompt2"class="prompt">{{game.second_prompt | safe}}</h3>
   <div class="canvas-box">
     <canvas id="game{{game.id}}-image2"></canvas>
   </div>
-  <h3 id="game{{game.id}}-prompt3" class="prompt">{{game.third_prompt | safe}}</h2>
+  <h3 id="game{{game.id}}-prompt3" class="prompt">{{game.third_prompt | safe}}</h3>
   <script>
     var canvas1 = new fabric.StaticCanvas('game{{game.id}}-image1');
     var canvas2 = new fabric.StaticCanvas('game{{game.id}}-image2');
