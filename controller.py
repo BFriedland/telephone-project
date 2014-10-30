@@ -185,7 +185,7 @@ def store_data(game_column, tablename, data):
 
         # "Postgres made us do it." -- Jason
         execute_string = model.DB_UPDATE_GAMES % (game_column,
-                                                 '%s', session['game_id'])
+                                                  '%s', session['game_id'])
         cur.execute(execute_string,
                     [inserted_data_id])
         db.commit()
