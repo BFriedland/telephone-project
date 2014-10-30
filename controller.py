@@ -33,7 +33,6 @@ def connect_db():
     if 'DATABASE' not in app.config:
         app.config['DATABASE'] = os.environ.get(
             'DATABASE_URL', 'dbname=telephone_db user=store')
-
     return psycopg2.connect(app.config['DATABASE'])
 
 
@@ -70,6 +69,7 @@ def get_first_prompt():
     with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
+        #username = session['username']
         cur.execute(model.DB_GET_FIRST_PROMPT_A, [username])
         #prompts from games not yet contributed to by user
         p1 = set(cur.fetchall())
@@ -81,8 +81,29 @@ def get_first_prompt():
     if first_prompts:
         result = first_prompts.pop()
         session['game_id'] = result[1]
-        return result[0]
-    return "Database could not find an appropriate game"
+    # If there is no game in the DB with no first prompt not contributed
+    # by username, repeat the above game-fetching and selecting logic after
+    # making a game.
+    # This COULD be a much shorter while loop,
+    # but that would make it harder to debug.
+    else:
+        create_game_on_step_two()
+        # Repeat the above, but after creating a game.
+        with closing(connect_db()) as db:
+            cur = db.cursor()
+            username = session['username']
+            cur.execute(model.DB_GET_FIRST_PROMPT_A, [username])
+            #prompts from games not yet contributed to by user
+            p1 = set(cur.fetchall())
+            cur.execute(model.DB_GET_FIRST_PROMPT_B)
+            #prompts from games needing user input for next step
+            p2 = set(cur.fetchall())
+            first_prompts = p1.intersection(p2)
+            db.commit()
+            result = first_prompts.pop()
+            session['game_id'] = result[1]
+    # This is the culmination of both sides of the conditional:
+    return result[0]
 
 
 @requires_username
@@ -160,7 +181,39 @@ def create_game():
 
 
 @requires_username
-def store_data(game_column, tablename, data):
+def create_game_on_step_two():
+        ''' Chain together create_game() and store_data() using
+        a randomly chosen default string as the first prompt.
+        Called when a user has submitted their own prompt and
+        needs to see a different user's prompt, but there are no
+        other users' prompts -- so a default prompt must be
+        created for them. '''
+
+        # Note: We DO NOT need to call create_game() because store_data()
+        # does that for us, and it also handles
+        # cookie attribute assignment and accessing.
+        # To be precise, store_data() puts the game_id inside the session
+        # and also uses it, along with the preexisting session username,
+        # to submit a prompt as if it was that user's prompt.
+
+        # This function will autogenerate a first prompt for the user.
+        list_of_default_prompts = ['A red shield decorated with two arrows and a slash.',
+                                   'A smurf and a carebear walk into a bar...',
+                                   'Dark Side Story']
+        random_prompt = random.sample(list_of_default_prompts, 1)[0]
+        # NOTE: default_username is only used in functions like this,
+        # where default prompts are to be provided.
+        # This parameterization allows us to call store_data() this way
+        # for any step where a user needs a default prompt supplied.
+        store_data('first_prompt_id',
+                   'prompts',
+                   random_prompt,
+                   default_username="A figment of your imagination")
+
+
+
+@requires_username
+def store_data(game_column, tablename, data, default_username=None):
     ''' Accepts a PSQL content table name and data to store in that table,
     inserts the data, and conducts a join on the games table. '''
     if not data:
@@ -173,7 +226,14 @@ def store_data(game_column, tablename, data):
 
     with closing(connect_db()) as db:
         cur = db.cursor()
-        username = session['username']
+
+        if default_username is not None:
+            # The newly-created first prompt MAY NOT BE created
+            # by the same user who is going to reply to it
+            username = str(default_username)
+        else:
+            username = session['username']
+
         now = datetime.datetime.utcnow()
         if tablename == 'prompts':
             cur.execute(model.DB_INSERT_PROMPT,
@@ -192,20 +252,6 @@ def store_data(game_column, tablename, data):
 
 
 @requires_username
-def store_first_prompt(prompt):
-    if not prompt:
-        raise ValueError('Prompt data not supplied to store_first_prompt')
-
-    with closing(connect_db()) as db:
-        cur = db.cursor()
-        tablename = 'prompts'
-        username = session['username']
-        now = datetime.datetime.utcnow()
-        cur.execute(model.DB_INSERT_CONTENT, [tablename, username, prompt, now])
-        db.commit()
-
-
-@requires_username
 def get_games():
     """Return a list of dictionaries containing gameids for games that
     the current user has contributed to"""
@@ -216,7 +262,7 @@ def get_games():
     GET_DATA_IDS = "SELECT * FROM games WHERE id=%s"
     with closing(connect_db()) as db:
         cur = db.cursor()
-        username = 'Charlie'
+        username = session['username']
         cur.execute(GET_PROMPTS, [username])
         prompt_ids = cur.fetchall()
         cur.execute(GET_IMAGES, [username])
@@ -238,12 +284,10 @@ def get_games():
             game_data_ids.append(cur.fetchall())
             db.commit()
         game_data_ids = [gdi[0] for gdi in game_data_ids]
-        for x in range(6):
-            if game_data_ids[x] == None:
-                game_data_ids[x] = 0
+        print game_data_ids
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
-            keys = ['id', 'fist_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
+            keys = ['id', 'first_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
             i_d = game[0]
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[1]])
             first_prompt = cur.fetchall()
@@ -256,9 +300,18 @@ def get_games():
             cur.execute("SELECT data FROM prompts WHERE id=%s", [game[5]])
             third_prompt = cur.fetchall()
             values = [i_d, first_prompt, first_image, second_prompt, second_image, third_prompt]
+            for i in range(1, 6):
+                if len(values[i]) == 0:
+                    values[i] = None
+                elif len(values[i]) == 1:
+                    values[i] = values[i][0][0]
+            result = dict(zip(keys, values))
+            if result['first_image'] is None:
+                result['first_image'] = sorry_image
+            if result['second_image'] is None:
+                result['second_image'] = sorry_image
 
-            return dict(zip(keys, values))
-
+            return result
         db.commit()
         games = [build_dict(game) for game in game_data_ids]
         return games

@@ -10,15 +10,15 @@
 <h2 class="instructions">SHOW THEM HERE!</h2>
 {% for game in games %}
 <div id="game{{game.id}}" class="game cf">
-  <h3 id="game{{game.id}}-prompt1" class="prompt">{{game.prompt1 | safe}}</h2>
+  <h3 id="game{{game.id}}-prompt1" class="prompt">{{game.first_prompt | safe}}</h2>
   <div class="canvas-box">
     <canvas id="game{{game.id}}-image1"></canvas>
   </div>
-  <h3 id="game{{game.id}}-prompt2"class="prompt">{{game.prompt2 | safe}}</h2>
+  <h3 id="game{{game.id}}-prompt2"class="prompt">{{game.second_prompt | safe}}</h2>
   <div class="canvas-box">
     <canvas id="game{{game.id}}-image2"></canvas>
   </div>
-  <h3 id="game{{game.id}}-prompt3" class="prompt">{{game.prompt3 | safe}}</h2>
+  <h3 id="game{{game.id}}-prompt3" class="prompt">{{game.third_prompt | safe}}</h2>
   <script>
     var canvas1 = new fabric.StaticCanvas('game{{game.id}}-image1');
     var canvas2 = new fabric.StaticCanvas('game{{game.id}}-image2');
@@ -26,8 +26,8 @@
     canvas1.setWidth(320);
     canvas2.setHeight(320);
     canvas2.setWidth(320);
-    var escapedString1 = $('<div/>').html("{{game.image1}}").text();
-    var escapedString2 = $('<div/>').html("{{game.image2}}").text();
+    var escapedString1 = $('<div/>').html("{{game.first_image}}").text();
+    var escapedString2 = $('<div/>').html("{{game.second_image}}").text();
     var image1JSON = JSON.parse(escapedString1);
     var image2JSON = JSON.parse(escapedString2);
     console.log(image2JSON);
