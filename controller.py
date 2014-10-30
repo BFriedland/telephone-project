@@ -78,7 +78,9 @@ def get_first_prompt():
         first_prompts = p1.intersection(p2)
         db.commit()
     if first_prompts:
-        return first_prompts.pop()
+        result = first_prompts.pop()
+        session['game_id'] = result[1]
+        return result[0]
     return "Database could not find an appropriate game"
 
 
@@ -97,7 +99,9 @@ def get_second_prompt():
         second_prompts = p1.intersection(p2)
         db.commit()
     if second_prompts:
-        return second_prompts.pop()
+        result = second_prompts.pop()
+        session['game_id'] = result[1]
+        return result[0]
     return "Database could not find an appopriate game"
 
 
@@ -116,7 +120,9 @@ def get_first_image():
         first_images = p1.intersection(p2)
         db.commit()
     if first_images:
-        return first_images.pop()[0]
+        result = first_images.pop()
+        session['game_id'] = result[1]
+        return result[0]
     return sorry_image
 
 
@@ -135,7 +141,9 @@ def get_second_image():
         second_images = p1.intersection(p2)
         db.commit()
     if second_images:
-        return second_images.pop()[0]
+        result = second_images.pop()
+        session['game_id'] = result[1]
+        return result[0]
     return sorry_image
 
 
