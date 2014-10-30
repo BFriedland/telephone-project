@@ -2,21 +2,38 @@
 {% block stylesheets %}
 <link rel="stylesheet" type="text/css" href="/static/typing.css">
 <link rel="stylesheet" type="text/css" href="/static/drawing.css">
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js"></script>
 {% endblock %}
 {% block body %}
 <h1 class="section-title">Games {{ user | safe }} contributed to</h1>
 <h2 class="instructions">SHOW THEM HERE!</h2>
 {% for game in games %}
 <div id="game{{game.id}}" class="game cf">
-  <h3 id="game{{game.id}}-prompt1" class="prompt">Placeholder text</h2>
+  <h3 id="game{{game.id}}-prompt1" class="prompt">{{game.prompt1 | safe}}</h2>
+  <div class="canvas-box">
+    <canvas id="game{{game.id}}-image1"></canvas>
+  </div>
+  <h3 id="game{{game.id}}-prompt2"class="prompt">{{game.prompt2 | safe}}</h2>
   <div class="canvas-box">
     <canvas id="game{{game.id}}-image2"></canvas>
   </div>
-  <h3 id="game{{game.id}}-prompt2"class="prompt">PLACEHOLDER TEXT</h2>
-  <div class="canvas-box">
-    <canvas id="game{{game.id}}-image2"></canvas>
-  </div>
-  <h3 id="game{{game.id}}-prompt3" class="prompt">PLACEHOLDER TEXT</h2>
+  <h3 id="game{{game.id}}-prompt3" class="prompt">{{game.prompt3 | safe}}</h2>
+  <script>
+    var canvas1 = new fabric.StaticCanvas('game{{game.id}}-image1');
+    var canvas2 = new fabric.StaticCanvas('game{{game.id}}-image2');
+    canvas1.setHeight(320);
+    canvas1.setWidth(320);
+    canvas2.setHeight(320);
+    canvas2.setWidth(320);
+    var escapedString1 = $('<div/>').html("{{game.image1}}").text();
+    var escapedString2 = $('<div/>').html("{{game.image2}}").text();
+    var image1JSON = JSON.parse(escapedString1);
+    var image2JSON = JSON.parse(escapedString2);
+    console.log(image2JSON);
+    canvas1.loadFromJSON(image1JSON, canvas1.renderAll.bind(canvas1));
+    canvas2.loadFromJSON(image2JSON, canvas2.renderAll.bind(canvas2));
+  </script>
 </div>
 {% endfor %}
 {% endblock %}
