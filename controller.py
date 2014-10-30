@@ -284,7 +284,6 @@ def get_games():
             game_data_ids.append(cur.fetchall())
             db.commit()
         game_data_ids = [gdi[0] for gdi in game_data_ids]
-        print game_data_ids
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
             keys = ['id', 'first_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
@@ -344,6 +343,7 @@ def step_two():
 @app.route('/step_three', methods=['POST'])
 @requires_username
 def step_three():
+    print json.dumps(request.json)
     store_data('first_image_id', 'images', json.dumps(request.json))
     response = {'html': render_template('step_three.html'),
                 'drawing': get_first_image()}

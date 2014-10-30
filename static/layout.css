@@ -47,6 +47,10 @@ header {
   margin: 0;
 }
 
+.status-area p {
+  margin: 5px;
+}
+
 #content {
   padding: 2em;
   position: relative;
