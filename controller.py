@@ -312,8 +312,6 @@ def store_data(game_column, tablename, data, default_username=None, supplied_gam
 
 @requires_username
 def get_games():
-    """Return a list of dictionaries containing gameids for games that
-    the current user has contributed to"""
     GET_PROMPTS = "SELECT id FROM prompts WHERE username=%s"
     GET_IMAGES = "SELECT id FROM images WHERE username=%s"
     GET_GAMES_P = "SELECT id FROM games WHERE first_prompt_id=%s OR second_prompt_id=%s OR third_prompt_id=%s"
