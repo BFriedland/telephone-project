@@ -397,6 +397,7 @@ def get_games():
     GET_IMAGES = "SELECT id FROM images WHERE username=%s"
     GET_GAMES_P = "SELECT id FROM games WHERE first_prompt_id=%s OR second_prompt_id=%s OR third_prompt_id=%s"
     GET_GAMES_I = "SELECT id FROM games WHERE first_image_id=%s OR second_image_id=%s"
+    GET_DATA_IDS = "SELECT * FROM games WHERE id=%s"
     with closing(connect_db()) as db:
         cur = db.cursor()
         username = session['username']
@@ -412,15 +413,15 @@ def get_games():
             cur.execute(GET_GAMES_I, [i_d, i_d])
             games += cur.fetchall()
         #Cleanup! Gets rid of duplicates and returns a list of ints rather than tuples
-    return [game[0] for game in list(set(games))]
-        
-
-
-    def get_game_by_id(eyedee):
-        GET_DATA_IDS = "SELECT * FROM games WHERE id=%s, [eyedee]"
-        cur.execute(GET_DATA_IDS)
-        game_data = cur.fetchall()[0]
-        db.commit()
+        games = [game[0] for game in list(set(games))]
+        #Now we fetch a list of ids of prompts/images for each game that the user
+        #has contributed to
+        game_data_ids = []
+        for g in games:
+            cur.execute(GET_DATA_IDS, [g])
+            game_data_ids.append(cur.fetchall())
+            db.commit()
+        game_data_ids = [gdi[0] for gdi in game_data_ids]
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
             keys = ['id', 'first_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
@@ -446,9 +447,11 @@ def get_games():
                 result['first_image'] = sorry_image
             if result['second_image'] is None:
                 result['second_image'] = sorry_image
+
             return result
         db.commit()
-        return build_dict(game_data)
+        games = [build_dict(game) for game in game_data_ids]
+        return games
 
 @app.route('/')
 def home():

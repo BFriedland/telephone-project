@@ -8,35 +8,28 @@
 {% block body %}
 <h1 class="section-title">Games {{ user }} contributed to</h1>
 <h2 class="instructions"><a href="/">Play Again</a></h2>
-{% for game in games %}
-<div id="game{{game.id}}" class="game cf">
-  <h2 class="instructions">GAME {{game.id}}</h2>
-  <h3 id="game{{game.id}}-prompt1" class="prompt">{{game.first_prompt }}</h3>
+{% if list %}
+<div class="game cf">
+  <h2 class="instructions">GAME </h2>
+  <h3 id="prompt1" class="prompt">prompt 1</h3>
   <div class="canvas-box">
-    <canvas id="game{{game.id}}-image1"></canvas>
+    <canvas id="image1"></canvas>
   </div>
-  <h3 id="game{{game.id}}-prompt2"class="prompt">{{game.second_prompt }}</h3>
+  <h3 id="prompt2"class="prompt">prompt 2</h3>
   <div class="canvas-box">
-    <canvas id="game{{game.id}}-image2"></canvas>
+    <canvas id="image2"></canvas>
   </div>
-  <h3 id="game{{game.id}}-prompt3" class="prompt">{{game.third_prompt }}</h3>
-  <script>
-    var canvas1 = new fabric.StaticCanvas('game{{game.id}}-image1');
-    var canvas2 = new fabric.StaticCanvas('game{{game.id}}-image2');
-    canvas1.setHeight(320);
-    canvas1.setWidth(320);
-    canvas2.setHeight(320);
-    canvas2.setWidth(320);
-    var escapedString1 = $('<div/>').html("{{game.first_image}}").text();
-    var escapedString2 = $('<div/>').html("{{game.second_image}}").text();
-    var image1JSON = JSON.parse(escapedString1);
-    var image2JSON = JSON.parse(escapedString2);
-    console.log(image2JSON);
-    canvas1.loadFromJSON(image1JSON, canvas1.renderAll.bind(canvas1));
-    canvas2.loadFromJSON(image2JSON, canvas2.renderAll.bind(canvas2));
-  </script>
+  <h3 id="prompt3" class="prompt">prompt 3</h3>
+  <ul class="button-box cf">
+    <li id="next" class="d-button">Next</li>
+    <li id="previous" class="d-button">Previous</li>
+  </ul>
 </div>
-{% endfor %}
+{% endif %}
 {% endblock %}
 {% block scripts %}
+<script>
+var list_of_games = {{ list }}
+</script>
+<script type="text/javascript" src="/static/showpage.js"></script>
 {% endblock %}
