@@ -338,7 +338,7 @@ def get_games():
 
 
     def get_game_by_id(eyedee):
-        GET_DATA_IDS = "SELECT * FROM games WHERE id=%s"
+        GET_DATA_IDS = "SELECT * FROM games WHERE id=%s, [eyedee]"
         cur.execute(GET_DATA_IDS)
         game_data = cur.fetchall()[0]
         db.commit()
