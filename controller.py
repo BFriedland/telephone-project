@@ -391,8 +391,6 @@ def store_data(game_column, tablename, data, default_username=None, supplied_gam
 
 @requires_username
 def get_games():
-    """Return a list of dictionaries for games that
-    the current user has contributed to"""
     GET_PROMPTS = "SELECT id FROM prompts WHERE username=%s"
     GET_IMAGES = "SELECT id FROM images WHERE username=%s"
     GET_GAMES_P = "SELECT id FROM games WHERE first_prompt_id=%s OR second_prompt_id=%s OR third_prompt_id=%s"
@@ -412,16 +410,17 @@ def get_games():
         for i_d in image_ids:
             cur.execute(GET_GAMES_I, [i_d, i_d])
             games += cur.fetchall()
-        #Cleanup! Gets rid of duplicates and returns a list of ints rather than tuples
-        games = [game[0] for game in list(set(games))]
-        #Now we fetch a list of ids of prompts/images for each game that the user
-        #has contributed to
-        game_data_ids = []
-        for g in games:
-            cur.execute(GET_DATA_IDS, [g])
-            game_data_ids.append(cur.fetchall())
-            db.commit()
-        game_data_ids = [gdi[0] for gdi in game_data_ids]
+        db.commit()
+    #Cleanup! Gets rid of duplicates and returns a list of ints rather than tuples
+    return [game[0] for game in list(set(games))]
+
+
+def get_game_by_id(eyedee):
+    with closing(connect_db()) as db:
+        cur = db.cursor()
+        GET_DATA_IDS = "SELECT * FROM games WHERE id=%s"
+        cur.execute(GET_DATA_IDS, [eyedee])
+        game_data = cur.fetchall()[0]
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
             keys = ['id', 'first_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
@@ -449,9 +448,9 @@ def get_games():
                 result['second_image'] = sorry_image
 
             return result
+        game_dict = build_dict(game_data)
         db.commit()
-        games = [build_dict(game) for game in game_data_ids]
-        return games
+        return game_dict
 
 @app.route('/')
 def home():
@@ -516,10 +515,14 @@ def final_step():
 @requires_username
 def show_games():
     games = get_games()
-    games = games[:9]
     return render_template('show_games.html',
                            user=session['username'],
-                           games=games)
+                           list=games)
+
+
+@app.route('/game/<int:game_id>')
+def show_game(game_id):
+    return json.dumps(get_game_by_id(game_id))
 
 
 @app.route('/login', methods=['GET', 'POST'])
