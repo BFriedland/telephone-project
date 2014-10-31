@@ -10,7 +10,7 @@
 <h2 class="instructions"><a href="/">Play Again</a></h2>
 {% if list %}
 <div class="game cf">
-  <h2 class="instructions">GAME </h2>
+  <h2 class="instructions">GAME <span id="game_id">XX</span></h2>
   <ul class="button-box cf">
     <li id="next" class="d-button">Next</li>
     <li id="previous" class="d-button">Previous</li>
@@ -28,8 +28,10 @@
 {% endif %}
 {% endblock %}
 {% block scripts %}
+{% if list %}
 <script>
 var list_of_games = {{ list }}
 </script>
 <script type="text/javascript" src="/static/showpage.js"></script>
+{% endif %}
 {% endblock %}

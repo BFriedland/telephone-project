@@ -418,8 +418,8 @@ def get_games():
 def get_game_by_id(eyedee):
     with closing(connect_db()) as db:
         cur = db.cursor()
-        GET_DATA_IDS = "SELECT * FROM games WHERE id=%s, [eyedee]"
-        cur.execute(GET_DATA_IDS)
+        GET_DATA_IDS = "SELECT * FROM games WHERE id=%s"
+        cur.execute(GET_DATA_IDS, [eyedee])
         game_data = cur.fetchall()[0]
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
@@ -448,9 +448,9 @@ def get_game_by_id(eyedee):
                 result['second_image'] = sorry_image
 
             return result
+        game_dict = build_dict(game_data)
         db.commit()
-    return build_dict(game_data)
-
+        return game_dict
 
 @app.route('/')
 def home():
@@ -515,7 +515,6 @@ def final_step():
 @requires_username
 def show_games():
     games = get_games()
-    print games
     return render_template('show_games.html',
                            user=session['username'],
                            list=games)
@@ -523,8 +522,7 @@ def show_games():
 
 @app.route('/game/<int:game_id>')
 def show_game(game_id):
-    print "received request for ", game_id
-    return "OK"
+    return json.dumps(get_game_by_id(game_id))
 
 
 @app.route('/login', methods=['GET', 'POST'])
