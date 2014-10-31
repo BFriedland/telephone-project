@@ -410,16 +410,17 @@ def get_games():
         for i_d in image_ids:
             cur.execute(GET_GAMES_I, [i_d, i_d])
             games += cur.fetchall()
-        #Cleanup! Gets rid of duplicates and returns a list of ints rather than tuples
-
+        db.commit()
+    #Cleanup! Gets rid of duplicates and returns a list of ints rather than tuples
     return [game[0] for game in list(set(games))]
 
 
-    def get_game_by_id(eyedee):
+def get_game_by_id(eyedee):
+    with closing(connect_db()) as db:
+        cur = db.cursor()
         GET_DATA_IDS = "SELECT * FROM games WHERE id=%s, [eyedee]"
         cur.execute(GET_DATA_IDS)
         game_data = cur.fetchall()[0]
-        db.commit()
         #We have the ids of all data we need, in order. Now we fetch the actual data
         def build_dict(game):
             keys = ['id', 'first_prompt', 'first_image', 'second_prompt', 'second_image', 'third_prompt']
@@ -448,8 +449,8 @@ def get_games():
 
             return result
         db.commit()
-        games = [build_dict(game) for game in game_data_ids]
-        return games
+    return build_dict(game_data)
+
 
 @app.route('/')
 def home():
