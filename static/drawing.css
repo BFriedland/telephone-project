@@ -96,7 +96,7 @@
 .size-selectors {
   list-style: none;
   position: relative;
-  width: 170px;
+  width: 210px;
   margin: auto;
   padding: 0;
 }
@@ -158,6 +158,15 @@
   background-color: black;
   top: 15px;
   left: 15px;
+}
+
+.tiny {
+  position: relative;
+  height: 2px;
+  width: 2px;
+  background-color: black;
+  top: 17px;
+  left: 17px;
 }
 
 .color-selectors .selector {
