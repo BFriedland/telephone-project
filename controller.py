@@ -391,7 +391,7 @@ def store_data(game_column, tablename, data, default_username=None, supplied_gam
 
 @requires_username
 def get_games():
-    """Return a list of dictionaries containing gameids for games that
+    """Return a list of dictionaries for games that
     the current user has contributed to"""
     GET_PROMPTS = "SELECT id FROM prompts WHERE username=%s"
     GET_IMAGES = "SELECT id FROM images WHERE username=%s"
@@ -481,7 +481,6 @@ def step_two():
 @app.route('/step_three', methods=['POST'])
 @requires_username
 def step_three():
-    print json.dumps(request.json)
     store_data('first_image_id', 'images', json.dumps(request.json))
     response = {'html': render_template('step_three.html'),
                 'drawing': get_first_image()}
@@ -517,6 +516,7 @@ def final_step():
 @requires_username
 def show_games():
     games = get_games()
+    games = games[:9]
     return render_template('show_games.html',
                            user=session['username'],
                            games=games)
