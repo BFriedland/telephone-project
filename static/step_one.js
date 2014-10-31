@@ -12,6 +12,7 @@ $(function () {
       })
       .done(function (response) {
         response = JSON.parse(response);
+        $('#content').empty();
         $('#content').html(response.html);
         $('.drawing-prompt').text(response.prompt);
         $.getScript('/static/step_two.js');
