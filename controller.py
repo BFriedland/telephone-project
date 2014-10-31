@@ -514,10 +514,16 @@ def final_step():
 @requires_username
 def show_games():
     games = get_games()
-    games = games[:9]
+    print games
     return render_template('show_games.html',
                            user=session['username'],
-                           games=games)
+                           list=games)
+
+
+@app.route('/game/<int:game_id>')
+def show_game(game_id):
+    print "received request for ", game_id
+    return "OK"
 
 
 @app.route('/login', methods=['GET', 'POST'])

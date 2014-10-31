@@ -11,6 +11,10 @@
 {% if list %}
 <div class="game cf">
   <h2 class="instructions">GAME </h2>
+  <ul class="button-box cf">
+    <li id="next" class="d-button">Next</li>
+    <li id="previous" class="d-button">Previous</li>
+  </ul>
   <h3 id="prompt1" class="prompt">prompt 1</h3>
   <div class="canvas-box">
     <canvas id="image1"></canvas>
@@ -20,10 +24,6 @@
     <canvas id="image2"></canvas>
   </div>
   <h3 id="prompt3" class="prompt">prompt 3</h3>
-  <ul class="button-box cf">
-    <li id="next" class="d-button">Next</li>
-    <li id="previous" class="d-button">Previous</li>
-  </ul>
 </div>
 {% endif %}
 {% endblock %}
