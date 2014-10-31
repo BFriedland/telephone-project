@@ -402,7 +402,6 @@ def step_two():
 @app.route('/step_three', methods=['POST'])
 @requires_username
 def step_three():
-    print json.dumps(request.json)
     store_data('first_image_id', 'images', json.dumps(request.json))
     response = {'html': render_template('step_three.html'),
                 'drawing': get_first_image()}
@@ -449,7 +448,6 @@ def login():
     if request.method == 'POST':
         session['username'] = request.form['username'].encode('utf-8')
         return redirect(url_for('home'))
-    print session
     return render_template('login.html')
 
 if __name__ == '__main__':
