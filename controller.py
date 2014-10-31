@@ -312,7 +312,7 @@ def store_data(game_column, tablename, data, default_username=None, supplied_gam
 
 @requires_username
 def get_games():
-    """Return a list of dictionaries containing gameids for games that
+    """Return a list of dictionaries for games that
     the current user has contributed to"""
     GET_PROMPTS = "SELECT id FROM prompts WHERE username=%s"
     GET_IMAGES = "SELECT id FROM images WHERE username=%s"
@@ -438,6 +438,7 @@ def final_step():
 @requires_username
 def show_games():
     games = get_games()
+    games = games[:9]
     return render_template('show_games.html',
                            user=session['username'],
                            games=games)
@@ -448,6 +449,7 @@ def login():
     if request.method == 'POST':
         session['username'] = request.form['username'].encode('utf-8')
         return redirect(url_for('home'))
+    print session
     return render_template('login.html')
 
 if __name__ == '__main__':
