@@ -48,6 +48,7 @@ $('#upload').on('click', function () {
     })
     .done(function (response) {
       $('#content').empty();
+      drawingCanvas = null;
       $('#content').html(response.html);
       var displayCanvas = new fabric.StaticCanvas('previous-image');
       displayCanvas.setHeight(320);

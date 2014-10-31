@@ -12,6 +12,7 @@ $(function () {
       })
       .done(function (response) {
         response = JSON.parse(response);
+        displayCanvas = null;
         $('#content').empty();
         $('#content').html(response.html);
         $('.drawing-prompt').text(response.prompt);
